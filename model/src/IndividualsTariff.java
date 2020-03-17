@@ -1,6 +1,6 @@
 public class IndividualsTariff {
     private Service[] services;
-    private int size;
+    private int size = 0; // кол-во не null элементов в массиве services
 
     public IndividualsTariff() {
         services = new Service[8];
@@ -15,19 +15,30 @@ public class IndividualsTariff {
         for (int i = 0; i < services.length; i++) {
             this.services[i] = services[i];
         }
+        size += services.length;
     }
 
     /**
      * Добавляет ссылку на экземпляр класса в массив,
-     * если свободно место в нём
+     * если свободно место в нём, иначе массив увеличивается в два раза,
+     * а затем экземпляр класса записывается в массив.
      * @param service ссылка на экземпляр класса Service
      * @return true, после завершения операции
      */
     public boolean add(Service service) {
-        for (Service element : services) {
-            if (element == null) {
-                element = service;
+        for (int i = 0; i < services.length; i++) {
+            if (services[i] == null) {
+                services[i] = service;
+                ++size;
                 break;
+            }
+
+            if (services[i] != null && (i + 1) == services.length) {
+                Service[] longerServicesArray = new Service[services.length * 2];
+                for (int j = 0; j < services.length; j++) {
+                    longerServicesArray[j] = services[j];
+                }
+                this.services = longerServicesArray;
             }
         }
         return true;
@@ -42,6 +53,7 @@ public class IndividualsTariff {
      */
     public boolean add(Service service, int index) {
         services[index] = service;
+        ++size;
         return true;
     }
 
@@ -61,7 +73,7 @@ public class IndividualsTariff {
      */
     public Service get(String serviceName) {
         for (Service element : services) {
-            if (element.getName() == serviceName) {
+            if (element.getName().equals(serviceName)) {
                 return element;
             }
         }
@@ -75,7 +87,7 @@ public class IndividualsTariff {
      */
     public boolean hasService(String serviceName) {
         for (Service element : services) {
-            if (element.getName() == serviceName) {
+            if (element.getName().equals(serviceName)) {
                 return true;
             }
         }
@@ -94,30 +106,62 @@ public class IndividualsTariff {
         return currentService;
     }
 
+    /**
+     * Удаляет экземпляр Service из массива, возвращает экземпляр,
+     * который там лежал. Элементы после удалённого "смещаются" вправо,
+     * а последний элемент принимает значение null.
+     * @param index индекс элемента
+     * @return экземпляр класса, лежащий в этом элементе
+     */
     public Service remove(int index) {
         Service currentService = services[index];
         services[index] = null;
+        for (int i = index + 1; i < services.length; i++) {
+            services[i - 1] = services[i];
+        }
+        services[services.length - 1] = null;
+        --size;
         return currentService;
     }
 
+    /**
+     * Удаляет экземпляр Service из массива по заданному
+     * имени, возвращает экземпляр, который там лежал.
+     * Элементы после удалённого "смещаются" вправо,
+     * а последний элемент принимает значение null.
+     * @param serviceName значение Name в экземпляре
+     * @return экземпляр класса, лежащий в этом элементе
+     */
     public Service remove(String serviceName) {
-        for (Service element : services) {
-            if (element.getName() == serviceName) {
-                Service currentService = element;
-                element = null;
+        for (int i = 0; i < services.length; i++) {
+            if (services[i].getName().equals(serviceName)) {
+                Service currentService = services[i];
+                services[i] = null;
+                for (int j = i + 1; i < services.length; i++) {
+                    services[j - 1] = services[j];
+                }
+                services[services.length - 1] = null;
+                --size;
                 return currentService;
             }
         }
         return null;
     }
 
-    public int size(){
-        return size;
-    }
+    public int size() { return size; }
 
     // null в массиве быть не должно. сайз == services.length
+
+    /**
+     * Возвращает массив услуг. Возвращаемый массив не имеет null элементов.
+     * @return массив услуг (экземпляров класса Service)
+     */
     public Service[] getServices() {
-        return services;
+        Service[] arrayToReturnWithoutNulls = new Service[size];
+        for (int i = 0; i < arrayToReturnWithoutNulls.length; i++) {
+            arrayToReturnWithoutNulls[i] = services[i];
+        }
+        return arrayToReturnWithoutNulls;
     }
 
     /**
@@ -126,20 +170,25 @@ public class IndividualsTariff {
      * @return массив услуг
      */
     public Service[] sortedServicesByCost() {
+        Service[] arrayToReturnWithoutNulls = new Service[size];
+        for (int i = 0; i < arrayToReturnWithoutNulls.length; i++) {
+            arrayToReturnWithoutNulls[i] = services[i];
+        }
+
         boolean isSorted = false;
         double buffer;
         while (!isSorted) {
             isSorted = true;
-            for (int i = 0; i < services.length - 1; i++) {
-                if (services[i].getCost() > services[i + 1].getCost()) {
+            for (int i = 0; i < arrayToReturnWithoutNulls.length - 1; i++) {
+                if (arrayToReturnWithoutNulls[i].getCost() > arrayToReturnWithoutNulls[i + 1].getCost()) {
                     isSorted = false;
-                    buffer = services[i].getCost();
-                    services[i].setCost(services[i + 1].getCost());
-                    services[i + 1].setCost(buffer);
+                    buffer = arrayToReturnWithoutNulls[i].getCost();
+                    arrayToReturnWithoutNulls[i].setCost(arrayToReturnWithoutNulls[i + 1].getCost());
+                    arrayToReturnWithoutNulls[i + 1].setCost(buffer);
                 }
             }
         }
-        return services;
+        return arrayToReturnWithoutNulls;
     }
 
     /**
@@ -148,11 +197,11 @@ public class IndividualsTariff {
      * @return стоимость тарифа
      */
     public double cost() {
-        double summServicesCost = 0;
+        double sumServicesCost = 0;
         for (Service element : services) {
-            summServicesCost += element.getCost();
+            sumServicesCost += element.getCost();
         }
-        return summServicesCost + 50;
+        return sumServicesCost + 50;
     }
 }
 
