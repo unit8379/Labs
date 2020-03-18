@@ -1,3 +1,5 @@
+package rpis82.ezhov.oop;
+
 public class AccountManager {
 
     private Account[] accounts;
@@ -14,7 +16,7 @@ public class AccountManager {
     }
 
     /**
-     * Добавляет счёт (Account) в первое свободное место в массиве
+     * Добавляет счёт (rpis82.ezhov.oop.Account) в первое свободное место в массиве
      * accounts. Если места нет, то увелчивает кол-во элементов массива
      * в два раза.
      * @param account экземпляр счёта
@@ -57,7 +59,7 @@ public class AccountManager {
 
     /**
      * Устанавливает новый экземпляр в элемент массива.
-     * Возвращает старый экземпляр класса Account.
+     * Возвращает старый экземпляр класса rpis82.ezhov.oop.Account.
      * @param index индекс элемента
      * @param account новый экземпляр класса
      * @return старый экземпляр класса
@@ -105,7 +107,7 @@ public class AccountManager {
 
     /**
      * Изменяет ссылку на экземпляр тарифа для счёта с заданным номером.
-     * Возвращает прежнюю ссылку на экземпляр класса IndividualsTariff.
+     * Возвращает прежнюю ссылку на экземпляр класса rpis82.ezhov.oop.IndividualsTariff.
      * @param accountNumber номер счёта
      * @param tariff ссылка на экземпляр тарифа
      * @return прежний тариф счёта

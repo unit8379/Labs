@@ -1,3 +1,5 @@
+package rpis82.ezhov.oop;
+
 public class Account {
 
     private long number;

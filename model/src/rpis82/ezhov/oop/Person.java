@@ -1,3 +1,5 @@
+package rpis82.ezhov.oop;
+
 public class Person {
     private String fName;
     private String sName;

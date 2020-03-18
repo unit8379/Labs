@@ -1,3 +1,5 @@
+package rpis82.ezhov.oop;
+
 public class Service {
     private String name;
     private double cost;

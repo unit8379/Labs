@@ -1,3 +1,5 @@
+package rpis82.ezhov.oop;
+
 public class IndividualsTariff {
     private Service[] services;
     private int size = 0; // кол-во не null элементов в массиве services
@@ -22,7 +24,7 @@ public class IndividualsTariff {
      * Добавляет ссылку на экземпляр класса в массив,
      * если свободно место в нём, иначе массив увеличивается в два раза,
      * а затем экземпляр класса записывается в массив.
-     * @param service ссылка на экземпляр класса Service
+     * @param service ссылка на экземпляр класса rpis82.ezhov.oop.Service
      * @return true, после завершения операции
      */
     public boolean add(Service service) {
@@ -60,7 +62,7 @@ public class IndividualsTariff {
     /**
      * Возвращает ссылку на экземпляр класса по его номеру в массиве
      * @param index номер элемента
-     * @return ссылка на экземпляр класса Service
+     * @return ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service get(int index) {
         return services[index];
@@ -69,7 +71,7 @@ public class IndividualsTariff {
     /**
      * Возвращает ссылку на экземпляр класса по его атрибуту имени
      * @param serviceName искомый атрибут name
-     * @return ссылка на экземпляр класса Service
+     * @return ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service get(String serviceName) {
         for (Service element : services) {
@@ -98,7 +100,7 @@ public class IndividualsTariff {
      * Заменяет ссылку в массиве на новую. Старую возвращает.
      * @param service ссылка на новую ссылку
      * @param index номер элемента
-     * @return предыдущая ссылка на экземпляр класса Service
+     * @return предыдущая ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service set(Service service, int index) {
         Service currentService = services[index];
@@ -107,7 +109,7 @@ public class IndividualsTariff {
     }
 
     /**
-     * Удаляет экземпляр Service из массива, возвращает экземпляр,
+     * Удаляет экземпляр rpis82.ezhov.oop.Service из массива, возвращает экземпляр,
      * который там лежал. Элементы после удалённого "смещаются" вправо,
      * а последний элемент принимает значение null.
      * @param index индекс элемента
@@ -125,7 +127,7 @@ public class IndividualsTariff {
     }
 
     /**
-     * Удаляет экземпляр Service из массива по заданному
+     * Удаляет экземпляр rpis82.ezhov.oop.Service из массива по заданному
      * имени, возвращает экземпляр, который там лежал.
      * Элементы после удалённого "смещаются" вправо,
      * а последний элемент принимает значение null.
@@ -154,7 +156,7 @@ public class IndividualsTariff {
 
     /**
      * Возвращает массив услуг. Возвращаемый массив не имеет null элементов.
-     * @return массив услуг (экземпляров класса Service)
+     * @return массив услуг (экземпляров класса rpis82.ezhov.oop.Service)
      */
     public Service[] getServices() {
         Service[] arrayToReturnWithoutNulls = new Service[size];
