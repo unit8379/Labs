@@ -1,4 +1,4 @@
-package rpis82.ezhov.oop;
+package rpis82.ezhov.oop.model;
 
 public class AccountManager {
 
