@@ -2,7 +2,7 @@ package rpis82.ezhov.oop.model;
 
 public class Test {
 
-    public static void lab1tests(){
+    public static void lab1tests() {
         Service service1 = new Service(); // значения по умолчанию
         Service service2 = new Service("интернет 50мб", 150);
         System.out.println(service1.getCost() + service1.getName());
@@ -23,4 +23,62 @@ public class Test {
         services = tariff1.sortedServicesByCost();
 
     }
+
+    public static void task1() {
+        Service service1 = new Service("интернет 150 мб", 500);
+        Service service2 = new Service("интернет 200 мб");
+        Service service3 = new Service();
+
+        // проинициализировал массив. первые два элемента задал сам, остальные три по умолчанию
+        IndividualsTariff tariff = new IndividualsTariff(5);
+        for (int i = 0; i < tariff.getServices().length; i++){
+
+            if (i == 0) {
+                tariff.add(service1);
+            }
+            else if (i == 1) {
+                tariff.add(service2);
+            }
+            else {
+                tariff.add(service3);
+            }
+        }
+
+        // вывод
+        ServicesArrayOut(tariff.getServices());
+        System.out.println("размер массива " + tariff.size());
+
+        // добавление нового экземляра услуги на место третьего элемента
+        tariff.add(service1, 2);
+
+        // вывод
+        ServicesArrayOut(tariff.getServices());
+        System.out.println("размер массива " + tariff.size());
+
+        // удаление второго элемента
+        tariff.remove(1);
+
+        // вывод
+        ServicesArrayOut(tariff.getServicesWithoutNulls());
+        System.out.println("размер массива " + tariff.size());
+
+        // сортировка массива по цене услуг
+        tariff.sortedServicesByCost();
+
+        // вывод
+        ServicesArrayOut(tariff.getServicesWithoutNulls());
+        System.out.println("размер массива " + tariff.size());
+
+    }
+
+    // метод вывода элементов массива
+    private static void ServicesArrayOut(Service[] servicesArray) {
+        System.out.println(servicesArray);  // адрес массива в памяти
+        System.out.println();
+
+        for (Service element : servicesArray) {
+            System.out.println(element.getName() + " " + element.getCost() + "; ");
+        }
+    }
+
 }

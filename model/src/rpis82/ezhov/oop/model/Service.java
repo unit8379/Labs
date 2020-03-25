@@ -15,9 +15,7 @@ public class Service {
     }
 
     // эмуляция имени по умолчанию
-    public Service(double cost) {
-        this("интернет 100мб/сек", cost);
-    }
+    public Service(double cost) { this("интернет 100мб/сек", cost); }
 
     public Service(String name, double cost) {
         this.name = name;

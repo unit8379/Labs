@@ -54,8 +54,13 @@ public class IndividualsTariff {
      * @return true, после завершения операции
      */
     public boolean add(Service service, int index) {
-        services[index] = service;
-        ++size;
+        if (services[index] == null) {
+            services[index] = service;
+            ++size;
+        }
+        else {
+            services[index] = service;
+        }
         return true;
     }
 
@@ -158,12 +163,16 @@ public class IndividualsTariff {
      * Возвращает массив услуг. Возвращаемый массив не имеет null элементов.
      * @return массив услуг (экземпляров класса rpis82.ezhov.oop.Service)
      */
-    public Service[] getServices() {
+    public Service[] getServicesWithoutNulls() {
         Service[] arrayToReturnWithoutNulls = new Service[size];
         for (int i = 0; i < arrayToReturnWithoutNulls.length; i++) {
             arrayToReturnWithoutNulls[i] = services[i];
         }
         return arrayToReturnWithoutNulls;
+    }
+
+    public Service[] getServices() {
+        return this.services;
     }
 
     /**
