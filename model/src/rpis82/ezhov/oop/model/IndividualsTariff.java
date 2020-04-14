@@ -1,6 +1,6 @@
 package rpis82.ezhov.oop.model;
 
-public class IndividualsTariff {
+public class IndividualsTariff implements Tariff {
     private Service[] services;
     private int size = 0; // кол-во не null элементов в массиве services
 
@@ -115,7 +115,7 @@ public class IndividualsTariff {
 
     /**
      * Удаляет экземпляр rpis82.ezhov.oop.Service из массива, возвращает экземпляр,
-     * который там лежал. Элементы после удалённого "смещаются" вправо,
+     * который там лежал. Элементы после удалённого "смещаются" влево,
      * а последний элемент принимает значение null.
      * @param index индекс элемента
      * @return экземпляр класса, лежащий в этом элементе
@@ -134,7 +134,7 @@ public class IndividualsTariff {
     /**
      * Удаляет экземпляр rpis82.ezhov.oop.Service из массива по заданному
      * имени, возвращает экземпляр, который там лежал.
-     * Элементы после удалённого "смещаются" вправо,
+     * Элементы после удалённого "смещаются" влево,
      * а последний элемент принимает значение null.
      * @param serviceName значение Name в экземпляре
      * @return экземпляр класса, лежащий в этом элементе

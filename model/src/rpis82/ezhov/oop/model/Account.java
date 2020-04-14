@@ -4,7 +4,7 @@ public class Account {
 
     private long number;
     private Person person;
-    private IndividualsTariff tariff;
+    private Tariff tariff;
 
     public Account(long number, Person person) {
         this.number = number;
@@ -12,7 +12,7 @@ public class Account {
         tariff = new IndividualsTariff(new Service[]{new Service()}); // экземпляр тарифа с одной стандартной услугой
     }
 
-    public Account(long number, Person person, IndividualsTariff tariff) {
+    public Account(long number, Person person, Tariff tariff) {
         this.number = number;
         this.person = person;
         this.tariff = tariff;
@@ -24,7 +24,7 @@ public class Account {
 
     public void setPerson(Person person) { this.person = person; }
 
-    public IndividualsTariff getTariff() { return tariff; }
+    public Tariff getTariff() { return tariff; }
 
-    public void setTariff(IndividualsTariff tariff) { this.tariff = tariff; }
+    public void setTariff(Tariff tariff) { this.tariff = tariff; }
 }

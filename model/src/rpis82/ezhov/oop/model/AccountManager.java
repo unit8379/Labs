@@ -96,7 +96,7 @@ public class AccountManager {
      * @param accountNumber номер счёта
      * @return экземпляр класса тарифа
      */
-    public IndividualsTariff getTariff(long accountNumber) {
+    public Tariff getTariff(long accountNumber) {
         for (Account element : accounts) {
             if (element.getNumber() == accountNumber) {
                 return element.getTariff();
@@ -112,10 +112,10 @@ public class AccountManager {
      * @param tariff ссылка на экземпляр тарифа
      * @return прежний тариф счёта
      */
-    public IndividualsTariff setTariff(long accountNumber, IndividualsTariff tariff) {
+    public Tariff setTariff(long accountNumber, Tariff tariff) {
         for (Account element : accounts) {
             if (element.getNumber() == accountNumber) {
-                IndividualsTariff currentTariff = element.getTariff();
+                Tariff currentTariff = element.getTariff();
                 element.setTariff(tariff);
                 return currentTariff;
             }
