@@ -40,9 +40,28 @@ public class Test {
         System.out.println(service2.getName() + " " + service2.getCost());
 
         Service[] services = {service1, service2};
+
+        System.out.println("Тестим IndividualsTariff через ссылку интерфейсного типа");
         IndividualsTariff tariff1 = new IndividualsTariff(services);
         Tariff tariff1_interface = tariff1;
         System.out.println(tariff1_interface.cost());
+
+        System.out.println();
+        System.out.println("Тестим ЭнтитиТариф через ссылку интерфейсного типа");
+        EntityTariff tariff2 = new EntityTariff(services);
+        Tariff tariff2_interface = tariff2;
+        System.out.println(tariff2_interface.cost());
+        System.out.println(tariff2_interface.add(service1, 2));
+        System.out.println(tariff2_interface.add(service2));
+        System.out.println(tariff2_interface.cost());
+        System.out.println(tariff2_interface.add(service1, 0));
+        System.out.println(tariff2_interface.cost());
+        System.out.println(tariff2_interface.remove("интернет 200мб"));
+        System.out.println(tariff2_interface.cost());
+        System.out.println(tariff2_interface.get(0));
+        for (Service element : tariff2_interface.sortedServicesByCost()) {
+            System.out.println(element.getCost());
+        }
     }
 
     /**

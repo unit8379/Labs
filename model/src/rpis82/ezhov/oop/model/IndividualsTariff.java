@@ -157,8 +157,6 @@ public class IndividualsTariff implements Tariff {
 
     public int size() { return size; }
 
-    // null в массиве быть не должно. сайз == services.length
-
     /**
      * Возвращает массив услуг. Возвращаемый массив не имеет null элементов.
      * @return массив услуг (экземпляров класса rpis82.ezhov.oop.Service)
@@ -215,37 +213,3 @@ public class IndividualsTariff implements Tariff {
         return sumServicesCost + 50;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
