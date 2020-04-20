@@ -163,15 +163,15 @@ public class EntityTariff implements Tariff {
         Service[] arrayToReturnWithoutNulls = getServicesWithoutNulls();
 
         boolean isSorted = false;
-        double buffer;
-        while (!isSorted) {  //todo сортировка пузырьком во втором тесте бесконечная. чинить
+        Service buffer;
+        while (!isSorted) {
             isSorted = true;
             for (int i = 0; i < arrayToReturnWithoutNulls.length - 1; i++) {
                 if (arrayToReturnWithoutNulls[i].getCost() > arrayToReturnWithoutNulls[i + 1].getCost()) {
                     isSorted = false;
-                    buffer = arrayToReturnWithoutNulls[i].getCost();
-                    arrayToReturnWithoutNulls[i].setCost(arrayToReturnWithoutNulls[i + 1].getCost());
-                    arrayToReturnWithoutNulls[i + 1].setCost(buffer);
+                    buffer = arrayToReturnWithoutNulls[i];
+                    arrayToReturnWithoutNulls[i] = arrayToReturnWithoutNulls[i + 1];
+                    arrayToReturnWithoutNulls[i + 1] = buffer;
                 }
             }
         }

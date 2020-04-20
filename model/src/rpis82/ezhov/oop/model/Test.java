@@ -62,6 +62,8 @@ public class Test {
         for (Service element : tariff2_interface.sortedServicesByCost()) {
             System.out.println(element.getCost());
         }
+        System.out.println(tariff2_interface.hasService("интернет 200мб"));
+        System.out.println(tariff2_interface.set(service1, 1));
     }
 
     /**
