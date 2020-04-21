@@ -64,6 +64,33 @@ public class Test {
         }
         System.out.println(tariff2_interface.hasService("интернет 200мб"));
         System.out.println(tariff2_interface.set(service1, 1));
+
+        System.out.println();
+        System.out.println("Тестим ИндивидуалАккаунт через интерфейс Аккаунт");
+        Person person1 = new Person("Gleb", "Ezhov");
+        IndividualAccount individualAccount1 = new IndividualAccount(8379, person1, tariff1_interface);
+        Account individualAccount1_interface = individualAccount1;
+        System.out.println(individualAccount1_interface.getNumber());
+        System.out.println(individualAccount1_interface.getTariff());
+
+        System.out.println();
+        System.out.println("Тестим ЕнтитиАккаунт через интерфейс Аккаунт");
+        EntityAccount entityAccount1 = new EntityAccount(8379, "Gleb Ezhov");
+        Account entityAccount1_interface = entityAccount1;
+        System.out.println(entityAccount1_interface.getNumber());
+        System.out.println(entityAccount1_interface.getTariff());
+        entityAccount1_interface.setTariff(tariff2_interface);
+        System.out.println(entityAccount1_interface.getTariff());
+
+        System.out.println();
+        System.out.println("Тестим АккаунтМенеджер через интерфейс Аккаунт");
+        AccountManager accountManager = new AccountManager(2);
+        accountManager.add(entityAccount1_interface);
+        accountManager.add(1, individualAccount1_interface);
+        System.out.println(accountManager.size());
+        System.out.println(accountManager.getAccounts());
+        accountManager.remove(0);
+        System.out.println(accountManager.size());
     }
 
     /**
