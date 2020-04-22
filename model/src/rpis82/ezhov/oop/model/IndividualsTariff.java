@@ -35,15 +35,19 @@ public class IndividualsTariff implements Tariff {
                 break;
             }
 
-            if (services[i] != null && (i + 1) == services.length) {
-                Service[] longerServicesArray = new Service[services.length * 2];
-                for (int j = 0; j < services.length; j++) {
-                    longerServicesArray[j] = services[j];
-                }
-                this.services = longerServicesArray;
-            }
+            increaseServicesArray(i);
         }
         return true;
+    }
+
+    private void increaseServicesArray(int index) {
+        if (services[index] != null && (index + 1) == services.length) {
+            Service[] longerServicesArray = new Service[services.length * 2];
+            for (int j = 0; j < services.length; j++) {
+                longerServicesArray[j] = services[j];
+            }
+            this.services = longerServicesArray;
+        }
     }
 
     /**
@@ -58,7 +62,8 @@ public class IndividualsTariff implements Tariff {
             services[index] = service;
             ++size;
         }
-        else {
+        else { // если услга по индексу массива уже присутствовала, то
+            // просто обновляем услгу в этом месте без увеличения поля size
             services[index] = service;
         }
         return true;
@@ -79,9 +84,9 @@ public class IndividualsTariff implements Tariff {
      * @return ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service get(String serviceName) {
-        for (Service element : services) {
-            if (element.getName().equals(serviceName)) {
-                return element;
+        for (int i = 0; i < services.length; i++) {
+            if (compareNames(i, serviceName)) {
+                return services[i];
             }
         }
         return null;
@@ -93,12 +98,14 @@ public class IndividualsTariff implements Tariff {
      * @return булево значение
      */
     public boolean hasService(String serviceName) {
-        for (Service element : services) {
-            if (element.getName().equals(serviceName)) {
-                return true;
-            }
+        for (int i = 0; i < services.length; i++) {
+            return compareNames(i, serviceName);
         }
         return false;
+    }
+
+    private boolean compareNames(int index, String serviceName) {
+        return services[index].getName().equals(serviceName) ? true : false;
     }
 
     /**
@@ -122,10 +129,12 @@ public class IndividualsTariff implements Tariff {
      */
     public Service remove(int index) {
         Service currentService = services[index];
+        /*
         services[index] = null;
         for (int i = index + 1; i < services.length; i++) {
             services[i - 1] = services[i];
-        }
+        } */
+        System.arraycopy(services, index + 1, services, index, services.length - index - 1);
         services[services.length - 1] = null;
         --size;
         return currentService;
@@ -141,7 +150,7 @@ public class IndividualsTariff implements Tariff {
      */
     public Service remove(String serviceName) {
         for (int i = 0; i < services.length; i++) {
-            if (services[i].getName().equals(serviceName)) {
+            if (compareNames(i, serviceName)) {
                 Service currentService = services[i];
                 services[i] = null;
                 for (int j = i + 1; i < services.length; i++) {

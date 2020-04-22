@@ -33,6 +33,42 @@ public class EntityTariff implements Tariff {
     }
 
     /**
+     * Добавление узла (с его заполнением) в конец списка, лиюо в первый незаполненный узел
+     * @param service услуга, которая пойдёт в value последнего не заполненного узла
+     *                или нового узла
+     */
+    private void addNode(Service service) {
+        if (head.getValue() == null) {
+            head.setValue(service);  // заполняем голову если она была пуста
+        }
+        else {  // здесь создаём новый узел и его заполняем. если нашёлся узел со значением null, то заполняем его
+            // но если всё верно то, это произойдёт лишь один раз при заполнении хвоста
+            boolean isValueSet = false;
+            Node currentNode = head; // текущий обрабатываемый узел
+            //Node previousNode = currentNode.getPrevious();
+            while (isValueSet != true) {
+                if (currentNode.getNext() == null) {
+                    currentNode.setNext(new Node(service, null, currentNode));
+                    currentNode = currentNode.getNext();
+                    tail = currentNode;
+                    //previousNode = currentNode.getPrevious();
+                    isValueSet = true;
+                    size++;  // +1 узел
+                    break;
+                }
+
+                if (currentNode.getNext().getValue() == null) {
+                    currentNode.getNext().setValue(service);
+                    tail = currentNode.getNext();
+                    isValueSet = true;
+                }
+
+                currentNode = currentNode.getNext();
+            }
+        }
+    }
+
+    /**
      * Создаёт узел списка по заданному индексу и заполняет
      * его заданной ссылкой на экземпляр услуги
      * @param index индекс элемента для записи
@@ -60,7 +96,7 @@ public class EntityTariff implements Tariff {
      */
     public Service get(String serviceName) {
         for (int i = 0; i < size; i++) {
-            if (getNode(i).getName().equals(serviceName)) {
+            if (compareNames(i, serviceName)) {
                 return getNode(i);
             }
         }
@@ -74,11 +110,13 @@ public class EntityTariff implements Tariff {
      */
     public boolean hasService(String serviceName) {
         for (int i = 0; i < size; i++) {
-            if (getNode(i).getName().equals(serviceName)) {
-                return true;
-            }
+            return compareNames(i, serviceName);
         }
         return false;
+    }
+
+    private boolean compareNames(int index, String serviceName) {
+        return getNode(index).getName().equals(serviceName) ? true : false;
     }
 
     /**
@@ -94,6 +132,38 @@ public class EntityTariff implements Tariff {
     }
 
     /**
+     * Метод возвращает ссылку на экземпляр услуги узла,
+     * который нужен по соответствующему индексу.
+     * @param index индекс узла
+     * @return экземпляр услуги
+     */
+    private Service getNode(int index) {
+        Node currentNode = head;
+        for (int i = 0; i <= index; i++) {
+            if (i == index) {
+                return currentNode.getValue();
+            }
+            currentNode = currentNode.getNext();
+        }
+        return null;
+    }
+
+    /**
+     * Метод, изменяющий ссылку на услгу в узле под заданным индексом.
+     * @param index индекс узла
+     * @param service ссылка на экземпляр услуги
+     */
+    private void changeNode(int index, Service service) {
+        Node currentNode = head;
+        for (int i = 0; i <= index; i++) {
+            if (i == index) {
+                currentNode.setValue(service);
+            }
+            currentNode = currentNode.getNext();
+        }
+    }
+
+    /**
      * Удаляет узел по заданному индексу из списка, возвращает
      * ссылку на экземпляр услуги, которая была в этом узле.
      * @param index индекс элемента
@@ -101,6 +171,33 @@ public class EntityTariff implements Tariff {
      */
     public Service remove(int index) {
         return removeNode(index).getValue();
+    }
+
+    /**
+     * Метод удаляющий узел списка по его индексу.
+     * Работа заключается в том, что на этот узел перестают ссылаться и
+     * он удаляется мусоросборщиком. Перед этим метод возвращает этот узел.
+     * Пока далее на возвращаемый узел будут ссылаться, он будет оставаться в памяти.
+     * @param index индекс удаляемого узла
+     * @return Node удалённый узел
+     */
+    private Node removeNode(int index) {
+        Node currentNode = head;
+        for (int i = 0; i <= index; i++) {
+            if (i == index) {
+                if (currentNode.getPrevious() != null) {
+                    currentNode.getPrevious().setNext(currentNode.getNext());
+                }
+                if (currentNode.getNext() != null) {
+                    currentNode.getNext().setPrevious(currentNode.getPrevious());
+                }
+                size--;
+                return currentNode;
+                // на currentNode больше никто не ссылается в рамках списка (т.е. удалён)
+            }
+            currentNode = currentNode.getNext();
+        }
+        return null;
     }
 
     /**
@@ -112,7 +209,7 @@ public class EntityTariff implements Tariff {
      */
     public Service remove(String serviceName) {
         for (int i = 0; i < size; i++) {
-            if (getNode(i).getName().equals(serviceName)) {
+            if (compareNames(i, serviceName)) {
                 return removeNode(i).getValue();
             }
         }
@@ -226,101 +323,6 @@ public class EntityTariff implements Tariff {
                 tail = tail.getNext(); // обновляем хвост после сдвига
                 size++;
             }
-        }
-    }
-
-    /**
-     * Добавление узла (с его заполнением) в конец списка, лиюо в первый незаполненный узел
-     * @param service услуга, которая пойдёт в value последнего не заполненного узла
-     *                или нового узла
-     */
-    private void addNode(Service service) {
-        if (head.getValue() == null) {
-            head.setValue(service);  // заполняем голову если она была пуста
-        }
-        else {  // здесь создаём новый узел и его заполняем. если нашёлся узел со значением null, то заполняем его
-               // но если всё верно то, это произойдёт лишь один раз при заполнении хвоста
-            boolean isValueSet = false;
-            Node currentNode = head; // текущий обрабатываемый узел
-            //Node previousNode = currentNode.getPrevious();
-            while (isValueSet != true) {
-                if (currentNode.getNext() == null) {
-                    currentNode.setNext(new Node(service, null, currentNode));
-                    currentNode = currentNode.getNext();
-                    tail = currentNode;
-                    //previousNode = currentNode.getPrevious();
-                    isValueSet = true;
-                    size++;  // +1 узел
-                    break;
-                }
-
-                if (currentNode.getNext().getValue() == null) {
-                    currentNode.getNext().setValue(service);
-                    tail = currentNode.getNext();
-                    isValueSet = true;
-                }
-
-                currentNode = currentNode.getNext();
-            }
-        }
-    }
-
-    /**
-     * Метод возвращает ссылку на экземпляр услуги узла,
-     * который нужен по соответствующему индексу.
-     * @param index индекс узла
-     * @return экземпляр услуги
-     */
-    private Service getNode(int index) {
-        Node currentNode = head;
-        for (int i = 0; i <= index; i++) {
-            if (i == index) {
-                return currentNode.getValue();
-            }
-            currentNode = currentNode.getNext();
-        }
-        return null;
-    }
-
-    /**
-     * Метод удаляющий узел списка по его индексу.
-     * Работа заключается в том, что на этот узел перестают ссылаться и
-     * он удаляется мусоросборщиком. Перед этим метод возвращает этот узел.
-     * Пока далее на возвращаемый узел будут ссылаться, он будет оставаться в памяти.
-     * @param index индекс удаляемого узла
-     * @return Node удалённый узел
-     */
-    private Node removeNode(int index) {
-        Node currentNode = head;
-        for (int i = 0; i <= index; i++) {
-            if (i == index) {
-                if (currentNode.getPrevious() != null) {
-                    currentNode.getPrevious().setNext(currentNode.getNext());
-                }
-                if (currentNode.getNext() != null) {
-                    currentNode.getNext().setPrevious(currentNode.getPrevious());
-                }
-                size--;
-                return currentNode;
-                // на currentNode больше никто не ссылается в рамках списка (т.е. удалён)
-            }
-            currentNode = currentNode.getNext();
-        }
-        return null;
-    }
-
-    /**
-     * Метод, изменяющий ссылку на услгу в узле под заданным индексом.
-     * @param index индекс узла
-     * @param service ссылка на экземпляр услуги
-     */
-    private void changeNode(int index, Service service) {
-        Node currentNode = head;
-        for (int i = 0; i <= index; i++) {
-            if (i == index) {
-                currentNode.setValue(service);
-            }
-            currentNode = currentNode.getNext();
         }
     }
 }

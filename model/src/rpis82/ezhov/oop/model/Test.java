@@ -143,6 +143,10 @@ public class Test {
 
     }
 
+    public static void task2() {
+        
+    }
+
     // метод вывода элементов массива
     private static void ServicesArrayOut(Service[] servicesArray) {
         System.out.println(servicesArray);  // адрес массива в памяти
