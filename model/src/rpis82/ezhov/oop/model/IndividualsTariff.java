@@ -183,6 +183,29 @@ public class IndividualsTariff implements Tariff {
     }
 
     /**
+     * Возвращает массив услуг указанного типа.
+     * @param type тип услуги
+     * @return массив из услуг
+     */
+    public Service[] getServices(ServiceTypes type) {
+        int specifiedSize = 0;
+        for (int i = 0; i < services.length; i++) {
+            if (services[i].getType() == type) {
+                specifiedSize++;
+            }
+        }
+        Service[] arrayToReturn = new Service[specifiedSize];
+
+        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
+            if (services[j].getType() == type) {
+                arrayToReturn[i] = services[j];
+                i++;
+            }
+        }
+        return arrayToReturn;
+    }
+
+    /**
      * Массив сортируется по возрастанию стоимости услуг (пузырьком)
      * и возвращается.
      * @return массив услуг

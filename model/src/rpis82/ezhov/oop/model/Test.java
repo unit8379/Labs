@@ -4,7 +4,7 @@ public class Test {
 
     /**
      * Тесты к первой лаб. раб.
-     */
+     */ /*
     public static void lab1tests() {
         Service service1 = new Service(); // значения по умолчанию
         Service service2 = new Service("интернет 50мб", 150);
@@ -25,11 +25,11 @@ public class Test {
         System.out.println(tariff1.size());
         services = tariff1.sortedServicesByCost();
 
-    }
+    } */
 
     /**
      * Тесты ко второй лаб. раб.
-     */
+     */ /*
     public static void lab2tests() {
         Service service1 = new Service(); // значения по умолчанию
         Service service2 = new Service("интернет 50мб", 150);
@@ -91,11 +91,37 @@ public class Test {
         System.out.println(accountManager.getAccounts());
         accountManager.remove(0);
         System.out.println(accountManager.size());
+    } */
+
+    /**
+     * Тесты к третьей лаб. раб.
+     */
+    public static void lab3tests() {
+        Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE);
+        System.out.println(service1.getType());
+        Service service2 = new Service();
+        Service[] services = { service1, service2 };
+        Tariff tariff1 = new IndividualsTariff(services);
+        Tariff tariff2 = new EntityTariff(services);
+        System.out.println(tariff1.getServices(ServiceTypes.INTERNET)[0].getType() + " " + tariff2.getServices(ServiceTypes.ADDITIONAL_SERVICE)[0].getType());
+        Person person1 = new Person("Gleb", "Ezhov");
+        IndividualAccount account1 = new IndividualAccount(1, person1, tariff1);
+        System.out.println(account1.getPerson().getFName() + " " + account1.getPerson().getSName());
+        EntityAccount account2 = new EntityAccount(2, "company", tariff2);
+        System.out.println(account2.getNumber());
+
+        // тест новых методов АккаунтМенеджера
+        AccountManager accManager1 = new AccountManager(2);
+        accManager1.add(account1);
+        accManager1.add(account2);
+        System.out.println(accManager1.getAccounts(ServiceTypes.ADDITIONAL_SERVICE)[0].getTariff().getServices(ServiceTypes.ADDITIONAL_SERVICE)[0].getType());
+        System.out.println(accManager1.getEntityAccounts()[0].getClass());
+        System.out.println(accManager1.getIndividualAccounts()[0].getClass());
     }
 
     /**
      * Метод с доп. заданием к первой лабораторной работе
-     */
+     */ /*
     public static void task1() {
         Service service1 = new Service("интернет 150 мб", 500);
         Service service2 = new Service("интернет 200 мб");
@@ -141,7 +167,7 @@ public class Test {
         ServicesArrayOut(tariff.getServicesWithoutNulls());
         System.out.println("размер массива " + tariff.size());
 
-    }
+    } */
 
     public static void task2() {
         

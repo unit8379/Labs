@@ -275,6 +275,26 @@ public class EntityTariff implements Tariff {
         return arrayToReturnWithoutNulls;
     }
 
+    public Service[] getServices(ServiceTypes type) {
+        Service[] services = getServicesWithoutNulls();
+
+        int specifiedSize = 0;
+        for (int i = 0; i < services.length; i++) {
+            if (services[i].getType() == type) {
+                specifiedSize++;
+            }
+        }
+        Service[] arrayToReturn = new Service[specifiedSize];
+
+        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
+            if (services[j].getType() == type) {
+                arrayToReturn[i] = services[j];
+                i++;
+            }
+        }
+        return arrayToReturn;
+    }
+
     /**
      * Возвращает общую стоимость тарифа.
      * 50 - сбор за обслуживание.

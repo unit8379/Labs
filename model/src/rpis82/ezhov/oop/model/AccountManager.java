@@ -92,6 +92,73 @@ public class AccountManager {
     public Account[] getAccounts() { return accounts; }
 
     /**
+     * Метод, возвращающий массив счетов, содержащих в своих тарифах указанную услугу.
+     * @param serviceType тип услуги
+     * @return массив счетов
+     */
+    public Account[] getAccounts(ServiceTypes serviceType) {
+        int specifiedSize = 0;
+        for (int i = 0; i < accounts.length; i++) {
+            if (accounts[i].getTariff().getServices(serviceType)[0] != null) {
+               specifiedSize++;
+            }
+        }
+        Account[] arrayToReturn = new Account[specifiedSize];
+
+        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
+            if (accounts[j].getTariff().getServices(serviceType)[0] != null) {
+                arrayToReturn[i] = accounts[j];
+                i++;
+            }
+        }
+        return arrayToReturn;
+    }
+
+    /**
+     * Метод возвращает массив счетов, состоящих из счетов типа IndividualAccount
+     * @return массив счетов
+     */
+    public Account[] getIndividualAccounts() {
+        int specifiedSize = 0;
+        for (int i = 0; i < accounts.length; i++) {
+            if (accounts[i].getClass().toString().equals("class rpis82.ezhov.oop.model.IndividualAccount")) {
+                specifiedSize++;
+            }
+        }
+        Account[] arrayToReturn = new Account[specifiedSize];
+
+        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
+            if (accounts[j].getClass().toString().equals("class rpis82.ezhov.oop.model.IndividualAccount")) {
+                arrayToReturn[i] = accounts[j];
+                i++;
+            }
+        }
+        return arrayToReturn;
+    }
+
+    /**
+     * Метод возвращает массив счетов, состоящих из счетов типа EntityAccount
+     * @return массив счетов
+     */
+    public Account[] getEntityAccounts() {
+        int specifiedSize = 0;
+        for (int i = 0; i < accounts.length; i++) {
+            if (accounts[i].getClass().toString().equals("class rpis82.ezhov.oop.model.EntityAccount")) {
+                specifiedSize++;
+            }
+        }
+        Account[] arrayToReturn = new Account[specifiedSize];
+
+        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
+            if (accounts[j].getClass().toString().equals("class rpis82.ezhov.oop.model.EntityAccount")) {
+                arrayToReturn[i] = accounts[j];
+                i++;
+            }
+        }
+        return arrayToReturn;
+    }
+
+    /**
      * Возвращает экземпляр тарифа по номеру счёта.
      * @param accountNumber номер счёта
      * @return экземпляр класса тарифа
