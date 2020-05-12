@@ -105,7 +105,7 @@ public class IndividualsTariff implements Tariff {
     }
 
     private boolean compareNames(int index, String serviceName) {
-        return services[index].getName().equals(serviceName) ? true : false;
+        return services[index].getName().equals(serviceName);
     }
 
     /**

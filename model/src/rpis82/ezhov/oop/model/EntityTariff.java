@@ -116,7 +116,7 @@ public class EntityTariff implements Tariff {
     }
 
     private boolean compareNames(int index, String serviceName) {
-        return getNode(index).getName().equals(serviceName) ? true : false;
+        return getNode(index).getName().equals(serviceName);
     }
 
     /**

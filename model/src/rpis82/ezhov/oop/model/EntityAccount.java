@@ -2,9 +2,7 @@ package rpis82.ezhov.oop.model;
 
 public class EntityAccount extends AbstractAccount {
 
-    private long number;
     private String name;
-    private Tariff tariff;
 
     public EntityAccount(long number, String name) {
         super(number, new EntityTariff(new Service[]{new Service()})); // экземпляр тарифа с одной стандартной услугой

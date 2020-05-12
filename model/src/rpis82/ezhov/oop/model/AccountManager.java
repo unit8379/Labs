@@ -121,14 +121,14 @@ public class AccountManager {
     public Account[] getIndividualAccounts() {
         int specifiedSize = 0;
         for (int i = 0; i < accounts.length; i++) {
-            if (accounts[i].getClass().toString().equals("class rpis82.ezhov.oop.model.IndividualAccount")) {
+            if (accounts[i] instanceof rpis82.ezhov.oop.model.IndividualAccount) {
                 specifiedSize++;
             }
         }
         Account[] arrayToReturn = new Account[specifiedSize];
 
         for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
-            if (accounts[j].getClass().toString().equals("class rpis82.ezhov.oop.model.IndividualAccount")) {
+            if (accounts[j] instanceof rpis82.ezhov.oop.model.IndividualAccount) {
                 arrayToReturn[i] = accounts[j];
                 i++;
             }
@@ -143,14 +143,14 @@ public class AccountManager {
     public Account[] getEntityAccounts() {
         int specifiedSize = 0;
         for (int i = 0; i < accounts.length; i++) {
-            if (accounts[i].getClass().toString().equals("class rpis82.ezhov.oop.model.EntityAccount")) {
+            if (accounts[i] instanceof rpis82.ezhov.oop.model.EntityAccount) {
                 specifiedSize++;
             }
         }
         Account[] arrayToReturn = new Account[specifiedSize];
 
         for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
-            if (accounts[j].getClass().toString().equals("class rpis82.ezhov.oop.model.EntityAccount")) {
+            if (accounts[j] instanceof rpis82.ezhov.oop.model.EntityAccount) {
                 arrayToReturn[i] = accounts[j];
                 i++;
             }
