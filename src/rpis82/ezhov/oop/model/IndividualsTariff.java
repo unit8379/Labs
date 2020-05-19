@@ -1,6 +1,9 @@
 package rpis82.ezhov.oop.model;
 
-public class IndividualsTariff implements Tariff {
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
+public class IndividualsTariff implements Tariff, Cloneable {
     private Service[] services;
     private int size = 0; // кол-во не null элементов в массиве services
 
@@ -153,7 +156,7 @@ public class IndividualsTariff implements Tariff {
             if (compareNames(i, serviceName)) {
                 Service currentService = services[i];
                 services[i] = null;
-                for (int j = i + 1; i < services.length; i++) {
+                for (int j = i + 1; j < services.length; j++) {
                     services[j - 1] = services[j];
                 }
                 services[services.length - 1] = null;
@@ -165,6 +168,57 @@ public class IndividualsTariff implements Tariff {
     }
 
     public int size() { return size; }
+
+    /**
+     * Удаляет экземпляр rpis82.ezhov.oop.Service из массива,
+     * если он эквивалентен той ссылке, что передана в качесвте параметра.
+     * @param service ссылка на услугу
+     * @return логическое значение, показывающее была ли удалена ссылка
+     */
+    public boolean remove(Service service) {
+        for (int i = 0; i < services.length; i++) {
+            if (services[i].equals(service)) {
+                services[i] = null;
+                for (int j = i + 1; j < services.length; j++) {
+                    services[j - 1] = services[j];
+                }
+                services[services.length - 1] = null;
+                --size;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Возвращает индекс первого вхождения в массив объекта Service,
+     * идентичного переданному в качестве параметра объекту.
+     * @param service ссылка на объект для сравнения.
+     * @return Индекс первого вхождения или -1, если такой объект не найден.
+     */
+    public int indexOf(Service service) {
+        for (int i = 0; i < services.length; i++) {
+            if (services[i].equals(service)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Возвращает индекс последнего вхождения в массив объекта Service,
+     * идентичного переданному в качестве параметра объекту.
+     * @param service ссылка на объект для сравнения.
+     * @return Индекс последнего вхождения или -1, если такой объект не найден.
+     */
+    public int lastIndexOf(Service service) {
+        for (int i = services.length - 1; i < 0; i--) {
+            if (services[i].equals(service)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     /**
      * Возвращает массив услуг. Возвращаемый массив не имеет null элементов.
@@ -179,7 +233,7 @@ public class IndividualsTariff implements Tariff {
     }
 
     public Service[] getServices() {
-        return this.services;
+        return getServicesWithoutNulls();
     }
 
     /**
@@ -243,5 +297,44 @@ public class IndividualsTariff implements Tariff {
             sumServicesCost += element.getCost();
         }
         return sumServicesCost + 50;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Services:");
+        for (Service element : getServicesWithoutNulls()) {
+            stringBuilder.append(String.format("%n%s", element.toString()));
+        }
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        int code = 31;
+        for (Service element : getServicesWithoutNulls()) {
+            code *= element.hashCode();
+        }
+        return code;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        IndividualsTariff individualsTariff = (IndividualsTariff) obj;
+        return (this.size == individualsTariff.size) && Arrays.equals(getServicesWithoutNulls(), individualsTariff.getServicesWithoutNulls());
+    }
+
+    @Override
+    public Tariff clone() throws CloneNotSupportedException {
+        // глубокое клонирование
+        // поле сайз не нужно копировать, т.к. оно станет идентичным оригиналу после заполнения клонами услуг.
+        Tariff tariff = new IndividualsTariff();
+
+        for (Service element : getServicesWithoutNulls()) {
+            tariff.add(element.clone());
+        }
+        return tariff;
     }
 }

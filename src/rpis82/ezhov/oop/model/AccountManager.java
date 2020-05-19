@@ -89,6 +89,42 @@ public class AccountManager {
 
     public int size() { return size; }
 
+    /**
+     * Удаляет экземпляр счёта из массива, если он будет
+     * эквивалентен переданному в качестве параметра счёту.
+     * @param account Экземпляр Account для сравнения.
+     * @return Логическое значение успеха выполнения метода.
+     */
+    public boolean remove(Account account) {
+        for (int i = 0; i < accounts.length; i++) {
+            if (accounts[i].equals(account)) {
+                accounts[i] = null;
+                for (int j = i + 1; j < accounts.length; j++) {
+                    accounts[j - 1] = accounts[j];
+                }
+                accounts[accounts.length - 1] = null;
+                --size;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Возвращает индекс первого вхождения в массив объекта Account,
+     * идентичного переданному в качестве параметра объекту.
+     * @param account ссылка на объект для сравнения.
+     * @return Индекс первого вхождения или -1, если такой объект не найден.
+     */
+    public int indexOf(Account account) {
+        for (int i = 0; i < accounts.length; i++) {
+            if (accounts[i].equals(account)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public Account[] getAccounts() { return accounts; }
 
     /**
@@ -188,5 +224,16 @@ public class AccountManager {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("");
+        for (Account element : accounts) {
+            if (element != null) {
+                stringBuilder.append(String.format("%n%s%n", element.toString()));
+            }
+        }
+        return stringBuilder.toString();
     }
 }

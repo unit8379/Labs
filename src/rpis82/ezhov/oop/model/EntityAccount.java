@@ -17,4 +17,24 @@ public class EntityAccount extends AbstractAccount {
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Entity account:\nEntity: " + name + "\n");
+        return stringBuilder.append(super.toString()).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return 53 * super.hashCode() * name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        EntityAccount entityAccount = (EntityAccount) obj;
+        return (this.name == entityAccount.name) && super.equals(obj);
+    }
 }

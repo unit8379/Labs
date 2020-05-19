@@ -1,5 +1,7 @@
 package rpis82.ezhov.oop.model;
 
+import java.security.spec.RSAOtherPrimeInfo;
+
 public class Test {
 
     /**
@@ -120,9 +122,11 @@ public class Test {
     }
 
     public static void lab4tests() {
+        // переопределённые методы класса Object в классе Service
         Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE);
         Service service2 = new Service();
         System.out.println(service1.toString());
+        System.out.println(service1.hashCode());
         System.out.println(service1.equals(service2));
         try {
             Service serviceClone = service1.clone();
@@ -131,6 +135,57 @@ public class Test {
             e.printStackTrace();
         }
 
+        // переопределённые методы класса Object в классе Person
+        Person person1 = new Person("Gleb", "Ezhov");
+        System.out.println(person1.toString());
+        System.out.println(person1.hashCode());
+        System.out.println("");
+
+        System.out.println("Тест индивидуал тарифов");
+        // переопределённые методы класса Object в классе IndividualsTariff
+        Service[] services = { service1, service2 };
+        IndividualsTariff individualsTariff = new IndividualsTariff(services);
+        System.out.println(individualsTariff.hashCode());
+        System.out.println(individualsTariff.toString() + "\n");
+        try {
+            Tariff tariff1 = individualsTariff.clone();
+            System.out.println(tariff1.toString());
+            System.out.println(individualsTariff.equals(tariff1));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        // переопределённые методы класса Object в классе EntityTariff
+        System.out.println("\nТест ентити тарифов");
+        EntityTariff entityTariff = new EntityTariff(services);
+        System.out.println(entityTariff.hashCode());
+        System.out.println(entityTariff.toString() + "\n");
+        try {
+            Tariff tariff2 = entityTariff.clone();
+            System.out.println(tariff2.toString());
+            System.out.println(entityTariff.equals(tariff2));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        // тест аккаунт менеджера
+        System.out.println("\nТест аккаунтов и аккаунт менеджера");
+        IndividualAccount account1 = new IndividualAccount(1, person1, individualsTariff);
+        EntityAccount account2 = new EntityAccount(2, "company", entityTariff);
+        AccountManager accManager1 = new AccountManager(2);
+        accManager1.add(account1);
+        accManager1.add(account2);
+        System.out.println(accManager1.toString());
+
+        // тест новых методов
+        System.out.println(individualsTariff.lastIndexOf(service1));
+        System.out.println(entityTariff.indexOf(service2));
+        System.out.println(entityTariff.remove(service2));
+        System.out.println(individualsTariff.remove(service2));
+        System.out.println(entityTariff.toString());
+        System.out.println(individualsTariff.toString());
+        System.out.println(accManager1.indexOf(account2));
+        System.out.println(accManager1.remove(account2));
+        System.out.println(accManager1.toString());
     }
 
     /**

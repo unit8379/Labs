@@ -1,5 +1,7 @@
 package rpis82.ezhov.oop.model;
 
+import java.util.Arrays;
+
 // тарифф юрид. лица. оперирует двусвязным списком. узлы описаны в классе Node
 public class EntityTariff implements Tariff {
     private int size = 0; // здесь сайз показывает количество узлов в списке. некоторые могут быть не заполнены
@@ -219,6 +221,79 @@ public class EntityTariff implements Tariff {
     public int size() { return size; }
 
     /**
+     * Удаляет экземпляр rpis82.ezhov.oop.Service из списка,
+     * если он эквивалентен той ссылке, что передана в качесвте параметра.
+     * @param service ссылка на услугу
+     * @return логическое значение, показывающее была ли удалена ссылка
+     */
+    public boolean remove(Service service) {
+        return removeNode(service);
+    }
+
+    /**
+     * Метод удаляющий узел списка, если его услуга
+     * идентична переданной в качестве параметра.
+     * Работа заключается в том, что на этот узел перестают ссылаться и
+     * он удаляется мусоросборщиком. Метод возвращает логическое
+     * значение успешности его работы.
+     * Пока далее на возвращаемый узел будут ссылаться, он будет оставаться в памяти.
+     * @param service ссылка на услугу для сравнения.
+     * @return Node удалённый узел.
+     */
+    private boolean removeNode(Service service) {
+        Node currentNode = head;
+        for (int i = 0; i < size; i++) {
+            if (currentNode.getValue().equals(service)) {
+                if (currentNode.getPrevious() != null) {
+                    currentNode.getPrevious().setNext(currentNode.getNext());
+                }
+                if (currentNode.getNext() != null) {
+                    currentNode.getNext().setPrevious(currentNode.getPrevious());
+                }
+                size--;
+                return true;
+                // на currentNode больше никто не ссылается в рамках списка (т.е. удалён)
+            }
+            currentNode = currentNode.getNext();
+        }
+        return false;
+    }
+
+    /**
+     * Метод возвращающий индекс первого вхождения заданного
+     * значения узла связанного списка.
+     * @param service Ссылка на услугу для сравнения со значением узла.
+     * @return Индекс первого вхождения или -1, если нужный узел не найден.
+     */
+    public int indexOf(Service service) {
+        Node currentNode = head;
+        for (int i = 0; i < size; i++) {
+            if (currentNode.getValue().equals(service)) {
+                return i;
+            }
+            currentNode = currentNode.getNext();
+        }
+        return -1;
+    }
+
+    /**
+     * Метод возвращающий индекс последнего вхождения заданного
+     * значения узла связанного списка.
+     * @param service Ссылка на услугу для сравнения со значением узла.
+     * @return Индекс последнего вхождения или -1, если нужный узел не найден.
+     */
+    public int lastIndexOf(Service service) {
+        Node currentNode = tail;
+        for (int i = size - 1; i < 0; i--) {
+            if (currentNode.getValue().equals(service)) {
+                return i;
+            }
+            currentNode = currentNode.getPrevious();
+        }
+        return -1;
+    }
+
+    /**
      * Возвращает массив всех услуг, содержащихся в двусвязном списке, пропуская
      * узлы содержащие значение null.
      * @return массив услуг (экземпляров класса rpis82.ezhov.oop.Service)
@@ -344,5 +419,46 @@ public class EntityTariff implements Tariff {
                 size++;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Services:");
+        for (Service element : getServicesWithoutNulls()) {
+            stringBuilder.append(String.format("%n%s", element.toString()));
+        }
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        int code = 71;
+        for (Service element : getServicesWithoutNulls()) {
+            code *= element.hashCode();
+        }
+        return code;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        EntityTariff entityTariff = (EntityTariff) obj;
+        return (this.size == entityTariff.size) && Arrays.equals(getServicesWithoutNulls(), entityTariff.getServicesWithoutNulls());
+    }
+
+    @Override
+    public Tariff clone() throws CloneNotSupportedException {
+        // глубокое клонирование
+        // при клонировании из супер класса падает с CloneNotSupportedException, т.к. не может склонировать узлы списка.
+        // здесь это делать необязательно, т.к. клон из констркутора получает поле size = 2, а потом во время
+        // добавления услуг это число становится таким же как и у оригинала.
+        Tariff tariff = new EntityTariff();
+
+        for (Service element : getServicesWithoutNulls()) {
+            tariff.add(element.clone());
+        }
+        return tariff;
     }
 }

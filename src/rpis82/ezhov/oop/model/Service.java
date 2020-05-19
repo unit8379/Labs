@@ -50,7 +50,7 @@ public final class Service implements Cloneable {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        Service service = (Service)obj;
+        Service service = (Service) obj;
         return (this.name.compareTo(service.name) == 0) && (Double.compare(this.cost, service.cost) == 0) && this.type == service.type;
     }
 

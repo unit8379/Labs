@@ -12,4 +12,23 @@ public class Person {
     public String getFName() { return fName; }
 
     public String getSName() { return sName; }
+
+    @Override
+    public String toString() {
+        return String.format("%1$s %2$s", fName, sName);
+    }
+
+    @Override
+    public int hashCode() {
+        return fName.hashCode() * sName.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Person person = (Person) obj;
+        return (this.fName.compareTo(person.fName) == 0) && (this.sName.compareTo(person.sName) == 0);
+    }
 }

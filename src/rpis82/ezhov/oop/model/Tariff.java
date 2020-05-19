@@ -17,6 +17,12 @@ public interface Tariff {
 
     Service remove(String serviceName);
 
+    boolean remove(Service service);
+
+    int indexOf(Service service);
+
+    int lastIndexOf(Service service);
+
     int size();
 
     Service[] getServices();
@@ -26,4 +32,12 @@ public interface Tariff {
     Service[] sortedServicesByCost();
 
     double cost();
+
+    String toString();
+
+    int hashCode();
+
+    boolean equals(Object obj);
+
+    public Tariff clone() throws CloneNotSupportedException;
 }

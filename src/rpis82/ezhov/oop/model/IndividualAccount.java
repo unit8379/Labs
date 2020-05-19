@@ -18,4 +18,24 @@ public class IndividualAccount extends AbstractAccount {
     public Person getPerson() { return person; }
 
     public void setPerson(Person person) { this.person = person; }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Individual account:\nHolder: " + person.toString() + "\n");
+        return stringBuilder.append(super.toString()).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return 97 * super.hashCode() * person.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        IndividualAccount individualAccount = (IndividualAccount) obj;
+        return this.person.equals(individualAccount.person) && super.equals(obj);
+    }
 }
