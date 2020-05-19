@@ -5,10 +5,15 @@ public final class Service {
     private final double cost;
     private final ServiceTypes type;
 
+    // значения по умолчанию
+    private final String NAME = "интернет 100мб/сек";
+    private final double COST = 300;
+    private final ServiceTypes TYPE = ServiceTypes.INTERNET;
+
     public Service() {
-        this.name = "интернет 100мб/сек";
-        this.cost = 300;
-        this.type = ServiceTypes.INTERNET;
+        this.name = NAME;
+        this.cost = COST;
+        this.type = TYPE;
     }
 
     public Service(String name, double cost, ServiceTypes type) {
