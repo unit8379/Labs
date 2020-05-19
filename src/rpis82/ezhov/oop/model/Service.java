@@ -1,6 +1,6 @@
 package rpis82.ezhov.oop.model;
 
-public final class Service {
+public final class Service implements Cloneable {
     private final String name;
     private final double cost;
     private final ServiceTypes type;
@@ -32,6 +32,32 @@ public final class Service {
 
     public ServiceTypes getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        // имя услуги (40 символов макс.) + цена (2 цифры после запятой)
+        return String.format("%1$.40s \\ %2$.2f р.", name, cost);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() * ((Double)cost).hashCode() * type.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Service service = (Service)obj;
+        return (this.name.compareTo(service.name) == 0) && (Double.compare(this.cost, service.cost) == 0) && this.type == service.type;
+    }
+
+    @Override
+    public Service clone() throws CloneNotSupportedException {
+        // здесь только поверхностное клонирование, т.к. поля не хранят ссылки на другие объекты
+        return (Service)super.clone();
     }
 
     /*public void setName(String name) {

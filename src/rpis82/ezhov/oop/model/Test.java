@@ -119,6 +119,20 @@ public class Test {
         System.out.println(accManager1.getIndividualAccounts()[0].getClass());
     }
 
+    public static void lab4tests() {
+        Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE);
+        Service service2 = new Service();
+        System.out.println(service1.toString());
+        System.out.println(service1.equals(service2));
+        try {
+            Service serviceClone = service1.clone();
+            System.out.println(serviceClone.getType() + " " + serviceClone.getName() + " " + serviceClone.getCost());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * Метод с доп. заданием к первой лабораторной работе
      */ /*
