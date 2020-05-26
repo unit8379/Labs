@@ -42,7 +42,8 @@ public final class Service implements Cloneable {
 
     @Override
     public int hashCode() {
-        return name.hashCode() * ((Double)cost).hashCode() * type.hashCode();
+        int code = name.hashCode() * ((Double)cost).hashCode() * type.hashCode();
+        return code < 0 ? -code : code;
     }
 
     @Override

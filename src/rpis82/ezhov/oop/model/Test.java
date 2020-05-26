@@ -238,8 +238,25 @@ public class Test {
 
     } */
 
-    public static void task2() {
-        
+    public static void task4() {
+        Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE);
+        Service service2 = new Service();
+        Person person1 = new Person("Gleb", "Ezhov");
+        Service[] services = { service1, service2 };
+        IndividualsTariff individualsTariff = new IndividualsTariff(services);
+        EntityTariff entityTariff = new EntityTariff(services);
+        IndividualAccount account1 = new IndividualAccount(1, person1, individualsTariff);
+        EntityAccount account2 = new EntityAccount(2, "company", entityTariff);
+        AccountManager accManager1 = new AccountManager(2);
+
+        System.out.println(service1.hashCode());
+        System.out.println(service2.hashCode());
+        System.out.println(person1.hashCode());
+        System.out.println(individualsTariff.hashCode());
+        System.out.println(entityTariff.hashCode());
+        System.out.println(account1.hashCode());
+        System.out.println(account2.hashCode());
+        System.out.println(accManager1.hashCode());
     }
 
     // метод вывода элементов массива

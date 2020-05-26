@@ -26,7 +26,8 @@ public class EntityAccount extends AbstractAccount {
 
     @Override
     public int hashCode() {
-        return 53 * super.hashCode() * name.hashCode();
+        int code = 53 * super.hashCode() * name.hashCode();
+        return code < 0 ? -code : code;
     }
 
     @Override

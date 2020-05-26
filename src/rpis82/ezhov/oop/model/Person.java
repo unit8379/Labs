@@ -20,7 +20,8 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return fName.hashCode() * sName.hashCode();
+        int code = fName.hashCode() * sName.hashCode();
+        return code < 0 ? -code : code;
     }
 
     @Override

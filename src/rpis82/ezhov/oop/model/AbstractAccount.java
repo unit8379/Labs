@@ -28,7 +28,8 @@ public abstract class AbstractAccount implements Account {
 
     @Override
     public int hashCode() {
-        return (int)number * tariff.getServices().length;
+        int code = (int)number * tariff.getServices().length;
+        return code < 0 ? -code : code;
     }
 
     @Override

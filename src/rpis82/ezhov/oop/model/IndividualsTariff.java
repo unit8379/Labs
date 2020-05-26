@@ -314,7 +314,7 @@ public class IndividualsTariff implements Tariff, Cloneable {
         for (Service element : getServicesWithoutNulls()) {
             code *= element.hashCode();
         }
-        return code;
+        return code < 0 ? -code : code;
     }
 
     @Override
