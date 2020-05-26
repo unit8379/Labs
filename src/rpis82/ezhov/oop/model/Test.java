@@ -188,6 +188,10 @@ public class Test {
         System.out.println(accManager1.toString());
     }
 
+    public static void lab5tests() {
+
+    }
+
     /**
      * Метод с доп. заданием к первой лабораторной работе
      */ /*
