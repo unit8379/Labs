@@ -1,6 +1,10 @@
 package rpis82.ezhov.oop.model;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 // тарифф юрид. лица. оперирует двусвязным списком. узлы описаны в классе Node
 public class EntityTariff implements Tariff {
@@ -30,12 +34,13 @@ public class EntityTariff implements Tariff {
      * @return true, после завершения операции
      */
     public boolean add(Service service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
         addNode(service);
         return true;
     }
 
     /**
-     * Добавление узла (с его заполнением) в конец списка, лиюо в первый незаполненный узел
+     * Добавление узла (с его заполнением) в конец списка, либо в первый незаполненный узел
      * @param service услуга, которая пойдёт в value последнего не заполненного узла
      *                или нового узла
      */
@@ -78,8 +83,19 @@ public class EntityTariff implements Tariff {
      * @return true, после завершения операции
      */
     public boolean add(Service service, int index) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+        if (!isCorrectIndex(index)) throw new IndexOutOfBoundsException();
         addNode(service, index);
         return true;
+    }
+
+    /**
+     * Метод проверки ввода корректного индекса.
+     * @param index Индекс элемента.
+     * @return Булево значение.
+     */
+    private boolean isCorrectIndex(int index) {
+        return index >= 0 && index < size;
     }
 
     /**
@@ -88,6 +104,7 @@ public class EntityTariff implements Tariff {
      * @return ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service get(int index) {
+        if (!isCorrectIndex(index)) throw new IndexOutOfBoundsException();
         return getNode(index);
     }
 
@@ -97,12 +114,14 @@ public class EntityTariff implements Tariff {
      * @return ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service get(String serviceName) {
+        if (Objects.isNull(serviceName)) throw new NullPointerException();
+
         for (int i = 0; i < size; i++) {
             if (compareNames(i, serviceName)) {
                 return getNode(i);
             }
         }
-        return null;
+        throw new NoSuchElementException();
     }
 
     /**
@@ -111,6 +130,8 @@ public class EntityTariff implements Tariff {
      * @return булево значение
      */
     public boolean hasService(String serviceName) {
+        if (Objects.isNull(serviceName)) throw new NullPointerException();
+
         for (int i = 0; i < size; i++) {
             return compareNames(i, serviceName);
         }
@@ -128,6 +149,9 @@ public class EntityTariff implements Tariff {
      * @return предыдущая ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service set(Service service, int index) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+        if (!isCorrectIndex(index)) throw new IndexOutOfBoundsException();
+
         Service currentService = getNode(index);
         changeNode(index, service);
         return currentService;
@@ -172,6 +196,7 @@ public class EntityTariff implements Tariff {
      * @return экземпляр класса, лежащий в этом узле
      */
     public Service remove(int index) {
+        if (!isCorrectIndex(index)) throw new IndexOutOfBoundsException();
         return removeNode(index).getValue();
     }
 
@@ -210,12 +235,14 @@ public class EntityTariff implements Tariff {
      * @return экземпляр класса, лежащий в этом узле
      */
     public Service remove(String serviceName) {
+        if (Objects.isNull(serviceName)) throw new NullPointerException();
+
         for (int i = 0; i < size; i++) {
             if (compareNames(i, serviceName)) {
                 return removeNode(i).getValue();
             }
         }
-        return null;
+        throw new NoSuchElementException();
     }
 
     public int size() { return size; }
@@ -227,6 +254,7 @@ public class EntityTariff implements Tariff {
      * @return логическое значение, показывающее была ли удалена ссылка
      */
     public boolean remove(Service service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
         return removeNode(service);
     }
 
@@ -266,6 +294,8 @@ public class EntityTariff implements Tariff {
      * @return Индекс первого вхождения или -1, если нужный узел не найден.
      */
     public int indexOf(Service service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+
         Node currentNode = head;
         for (int i = 0; i < size; i++) {
             if (currentNode.getValue().equals(service)) {
@@ -283,6 +313,8 @@ public class EntityTariff implements Tariff {
      * @return Индекс последнего вхождения или -1, если нужный узел не найден.
      */
     public int lastIndexOf(Service service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+
         Node currentNode = tail;
         for (int i = size - 1; i < 0; i--) {
             if (currentNode.getValue().equals(service)) {
@@ -351,6 +383,8 @@ public class EntityTariff implements Tariff {
     }
 
     public Service[] getServices(ServiceTypes type) {
+        if (Objects.isNull(type)) throw new NullPointerException();
+
         Service[] services = getServicesWithoutNulls();
 
         int specifiedSize = 0;
@@ -378,7 +412,14 @@ public class EntityTariff implements Tariff {
     public double cost() {
         double sumServicesCost = 0;
         for (Service element : getServicesWithoutNulls()) {
-            sumServicesCost += element.getCost();
+            // если срок использования тарифа меньше месяца, то пересчёт на дни
+            if (Period.between(element.getActivationDate(), LocalDate.now()).getMonths() == 0) {
+                sumServicesCost += Period.between(element.getActivationDate(), LocalDate.now()).getDays() *
+                        element.getCost() / element.getActivationDate().lengthOfMonth();
+            }
+            else {
+                sumServicesCost += element.getCost();
+            }
         }
         return sumServicesCost + 50;
     }

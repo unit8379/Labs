@@ -1,7 +1,11 @@
 package rpis82.ezhov.oop.model;
 
 import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class IndividualsTariff implements Tariff, Cloneable {
     private Service[] services;
@@ -31,6 +35,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return true, после завершения операции
      */
     public boolean add(Service service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+
         for (int i = 0; i < services.length; i++) {
             if (services[i] == null) {
                 services[i] = service;
@@ -61,6 +67,9 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return true, после завершения операции
      */
     public boolean add(Service service, int index) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+        if (!isCorrectIndex(index)) throw new IndexOutOfBoundsException();
+
         if (services[index] == null) {
             services[index] = service;
             ++size;
@@ -73,11 +82,21 @@ public class IndividualsTariff implements Tariff, Cloneable {
     }
 
     /**
+     * Метод проверки ввода корректного индекса.
+     * @param index Индекс элемента.
+     * @return Булево значение.
+     */
+    private boolean isCorrectIndex(int index) {
+        return index >= 0 && index < size;
+    }
+
+    /**
      * Возвращает ссылку на экземпляр класса по его номеру в массиве
      * @param index номер элемента
      * @return ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service get(int index) {
+        if (!isCorrectIndex(index)) throw new IndexOutOfBoundsException();
         return services[index];
     }
 
@@ -87,12 +106,14 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service get(String serviceName) {
+        if (Objects.isNull(serviceName)) throw new NullPointerException();
+
         for (int i = 0; i < services.length; i++) {
             if (compareNames(i, serviceName)) {
                 return services[i];
             }
         }
-        return null;
+        throw new NoSuchElementException();
     }
 
     /**
@@ -101,6 +122,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return булево значение
      */
     public boolean hasService(String serviceName) {
+        if (Objects.isNull(serviceName)) throw new NullPointerException();
+
         for (int i = 0; i < services.length; i++) {
             return compareNames(i, serviceName);
         }
@@ -118,6 +141,9 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return предыдущая ссылка на экземпляр класса rpis82.ezhov.oop.Service
      */
     public Service set(Service service, int index) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+        if (!isCorrectIndex(index)) throw new IndexOutOfBoundsException();
+
         Service currentService = services[index];
         services[index] = service;
         return currentService;
@@ -131,6 +157,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return экземпляр класса, лежащий в этом элементе
      */
     public Service remove(int index) {
+        if (!isCorrectIndex(index)) throw new IndexOutOfBoundsException();
+
         Service currentService = services[index];
         /*
         services[index] = null;
@@ -152,6 +180,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return экземпляр класса, лежащий в этом элементе
      */
     public Service remove(String serviceName) {
+        if (Objects.isNull(serviceName)) throw new NullPointerException();
+
         for (int i = 0; i < services.length; i++) {
             if (compareNames(i, serviceName)) {
                 Service currentService = services[i];
@@ -164,7 +194,7 @@ public class IndividualsTariff implements Tariff, Cloneable {
                 return currentService;
             }
         }
-        return null;
+        throw new NoSuchElementException();
     }
 
     public int size() { return size; }
@@ -176,6 +206,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return логическое значение, показывающее была ли удалена ссылка
      */
     public boolean remove(Service service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+
         for (int i = 0; i < services.length; i++) {
             if (services[i].equals(service)) {
                 services[i] = null;
@@ -197,6 +229,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return Индекс первого вхождения или -1, если такой объект не найден.
      */
     public int indexOf(Service service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+
         for (int i = 0; i < services.length; i++) {
             if (services[i].equals(service)) {
                 return i;
@@ -212,6 +246,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return Индекс последнего вхождения или -1, если такой объект не найден.
      */
     public int lastIndexOf(Service service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+
         for (int i = services.length - 1; i < 0; i--) {
             if (services[i].equals(service)) {
                 return i;
@@ -242,6 +278,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return массив из услуг
      */
     public Service[] getServices(ServiceTypes type) {
+        if (Objects.isNull(type)) throw new NullPointerException();
+
         int specifiedSize = 0;
         for (int i = 0; i < services.length; i++) {
             if (services[i].getType() == type) {
@@ -294,7 +332,14 @@ public class IndividualsTariff implements Tariff, Cloneable {
     public double cost() {
         double sumServicesCost = 0;
         for (Service element : services) {
-            sumServicesCost += element.getCost();
+            // если срок использования тарифа меньше месяца, то пересчёт на дни
+            if (Period.between(element.getActivationDate(), LocalDate.now()).getMonths() == 0) {
+                sumServicesCost += Period.between(element.getActivationDate(), LocalDate.now()).getDays() *
+                        element.getCost() / element.getActivationDate().lengthOfMonth();
+            }
+            else {
+                sumServicesCost += element.getCost();
+            }
         }
         return sumServicesCost + 50;
     }

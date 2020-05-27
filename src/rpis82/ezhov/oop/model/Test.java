@@ -1,6 +1,9 @@
 package rpis82.ezhov.oop.model;
 
 import java.security.spec.RSAOtherPrimeInfo;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Period;
 
 public class Test {
 
@@ -97,7 +100,7 @@ public class Test {
 
     /**
      * Тесты к третьей лаб. раб.
-     */
+     */ /*
     public static void lab3tests() {
         Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE);
         System.out.println(service1.getType());
@@ -119,8 +122,9 @@ public class Test {
         System.out.println(accManager1.getAccounts(ServiceTypes.ADDITIONAL_SERVICE)[0].getTariff().getServices(ServiceTypes.ADDITIONAL_SERVICE)[0].getType());
         System.out.println(accManager1.getEntityAccounts()[0].getClass());
         System.out.println(accManager1.getIndividualAccounts()[0].getClass());
-    }
+    } */
 
+     /*
     public static void lab4tests() {
         // переопределённые методы класса Object в классе Service
         Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE);
@@ -186,9 +190,21 @@ public class Test {
         System.out.println(accManager1.indexOf(account2));
         System.out.println(accManager1.remove(account2));
         System.out.println(accManager1.toString());
-    }
+    } */
 
     public static void lab5tests() {
+        Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE, LocalDate.of(2020, 05, 15));
+        Service service2 = new Service();
+        System.out.println(service1.toString());
+        Service[] services = { service1, service2 };
+        IndividualsTariff individualsTariff = new IndividualsTariff(services);
+        EntityTariff entityTariff = new EntityTariff(services);
+        //entityTariff.get(null);
+        LocalDate oldDate = LocalDate.of(2016, Month.NOVEMBER, 1);
+        LocalDate newDate = LocalDate.of(2016, Month.NOVEMBER, 9);
+        System.out.println(Period.between(oldDate, newDate).getMonths());
+        System.out.println("ентити кост: " + entityTariff.cost() + "; индивидуал кост: " + individualsTariff.cost());
+        
 
     }
 
@@ -242,6 +258,7 @@ public class Test {
 
     } */
 
+     /*
     public static void task4() {
         Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE);
         Service service2 = new Service();
@@ -261,7 +278,7 @@ public class Test {
         System.out.println(account1.hashCode());
         System.out.println(account2.hashCode());
         System.out.println(accManager1.hashCode());
-    }
+    } */
 
     // метод вывода элементов массива
     private static void ServicesArrayOut(Service[] servicesArray) {

@@ -1,10 +1,14 @@
 package rpis82.ezhov.oop.model;
 
+import java.util.Objects;
+
 public class Person {
     private String fName;
     private String sName;
 
     public Person(String fName, String sName) {
+        if (Objects.isNull(fName) || Objects.isNull(sName)) throw new NullPointerException();
+
         this.fName = fName;
         this.sName = sName;
     }

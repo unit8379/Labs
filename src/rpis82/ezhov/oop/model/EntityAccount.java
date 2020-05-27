@@ -1,22 +1,30 @@
 package rpis82.ezhov.oop.model;
 
+import java.time.LocalDate;
+import java.util.Objects;
+
 public class EntityAccount extends AbstractAccount {
 
     private String name;
 
     public EntityAccount(long number, String name) {
-        super(number, new EntityTariff(new Service[]{new Service()})); // экземпляр тарифа с одной стандартной услугой
+        super(number, new EntityTariff(new Service[]{new Service()}), LocalDate.now()); // экземпляр тарифа с одной стандартной услугой
+        if (Objects.isNull(name)) throw new NullPointerException();
         this.name = name;
     }
 
-    public EntityAccount(long number, String name, Tariff tariff) {
-        super(number, tariff);
+    public EntityAccount(long number, String name, Tariff tariff, LocalDate registrationDate) {
+        super(number, tariff, registrationDate);
+        if (Objects.isNull(name)) throw new NullPointerException();
         this.name = name;
     }
 
     public String getName() { return name; }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        if (Objects.isNull(name)) throw new NullPointerException();
+        this.name = name;
+    }
 
     @Override
     public String toString() {
