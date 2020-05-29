@@ -3,7 +3,7 @@ package rpis82.ezhov.oop.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public final class Service implements Cloneable {
+public final class Service implements Cloneable, Comparable<Service> {
     private final String name;
     private final double cost;
     private final ServiceTypes type;
@@ -72,6 +72,10 @@ public final class Service implements Cloneable {
     public Service clone() throws CloneNotSupportedException {
         // здесь только поверхностное клонирование, т.к. поля не хранят ссылки на другие объекты
         return (Service)super.clone();
+    }
+
+    public int compareTo(Service service) {
+        return (int)(this.cost - service.getCost());
     }
 
     /*public void setName(String name) {

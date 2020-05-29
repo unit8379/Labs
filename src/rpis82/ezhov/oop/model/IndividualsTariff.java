@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -108,9 +109,9 @@ public class IndividualsTariff implements Tariff, Cloneable {
     public Service get(String serviceName) {
         if (Objects.isNull(serviceName)) throw new NullPointerException();
 
-        for (int i = 0; i < services.length; i++) {
-            if (compareNames(i, serviceName)) {
-                return services[i];
+        for (Service element : this) {
+            if (element.getName().equals(serviceName)) {
+                return element;
             }
         }
         throw new NoSuchElementException();
@@ -124,8 +125,10 @@ public class IndividualsTariff implements Tariff, Cloneable {
     public boolean hasService(String serviceName) {
         if (Objects.isNull(serviceName)) throw new NullPointerException();
 
-        for (int i = 0; i < services.length; i++) {
-            return compareNames(i, serviceName);
+        for (Service element : this) {
+            if (element.getName().equals(serviceName)) {
+                return true;
+            }
         }
         return false;
     }
@@ -303,24 +306,8 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @return массив услуг
      */
     public Service[] sortedServicesByCost() {
-        Service[] arrayToReturnWithoutNulls = new Service[size];
-        for (int i = 0; i < arrayToReturnWithoutNulls.length; i++) {
-            arrayToReturnWithoutNulls[i] = services[i];
-        }
-
-        boolean isSorted = false;
-        Service buffer;
-        while (!isSorted) {
-            isSorted = true;
-            for (int i = 0; i < arrayToReturnWithoutNulls.length - 1; i++) {
-                if (arrayToReturnWithoutNulls[i].getCost() > arrayToReturnWithoutNulls[i + 1].getCost()) {
-                    isSorted = false;
-                    buffer = arrayToReturnWithoutNulls[i];
-                    arrayToReturnWithoutNulls[i] = arrayToReturnWithoutNulls[i + 1];
-                    arrayToReturnWithoutNulls[i + 1] = buffer;
-                }
-            }
-        }
+        Service[] arrayToReturnWithoutNulls = getServicesWithoutNulls();
+        Arrays.sort(arrayToReturnWithoutNulls);
         return arrayToReturnWithoutNulls;
     }
 
@@ -331,7 +318,7 @@ public class IndividualsTariff implements Tariff, Cloneable {
      */
     public double cost() {
         double sumServicesCost = 0;
-        for (Service element : services) {
+        for (Service element : this) {
             // если срок использования тарифа меньше месяца, то пересчёт на дни
             if (Period.between(element.getActivationDate(), LocalDate.now()).getMonths() == 0) {
                 sumServicesCost += Period.between(element.getActivationDate(), LocalDate.now()).getDays() *
@@ -381,5 +368,25 @@ public class IndividualsTariff implements Tariff, Cloneable {
             tariff.add(element.clone());
         }
         return tariff;
+    }
+
+    public Iterator<Service> iterator() {
+        return new ServiceIterator();
+    }
+
+    private class ServiceIterator implements Iterator<Service> {
+        int index;
+
+        public boolean hasNext() {
+            if (index < size) {
+                return true;
+            }
+            return false;
+        }
+
+        public Service next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            return get(index++);
+        }
     }
 }

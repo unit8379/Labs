@@ -1,6 +1,8 @@
 package rpis82.ezhov.oop.model;
 
-public interface Tariff {
+import java.util.Objects;
+
+public interface Tariff extends Iterable<Service> {
     boolean add(Service service);
 
     boolean add(Service service, int index);

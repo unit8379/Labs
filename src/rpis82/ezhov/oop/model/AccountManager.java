@@ -1,9 +1,10 @@
 package rpis82.ezhov.oop.model;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class AccountManager {
+public class AccountManager implements Iterable<Account> {
 
     private Account[] accounts;
     private int size = 0; // хранит кол-во не null элементов в массиве accounts
@@ -197,7 +198,7 @@ public class AccountManager {
         if (!AbstractAccount.isCorrectNumber(accountNumber))
             throw new IllegalAccountNumber("Номер счёта вышел из допустимого диапазона.");
 
-        for (Account element : accounts) {
+        for (Account element : this) {
             if (element.getNumber() == accountNumber) {
                 return element;
             }
@@ -258,7 +259,7 @@ public class AccountManager {
         if (!AbstractAccount.isCorrectNumber(accountNumber))
             throw new IllegalAccountNumber("Номер счёта вышел из допустимого диапазона.");
 
-        for (Account element : accounts) {
+        for (Account element : this) {
             if (element.getNumber() == accountNumber) {
                 return element.getTariff();
             }
@@ -278,7 +279,7 @@ public class AccountManager {
         if (!AbstractAccount.isCorrectNumber(accountNumber))
             throw new IllegalAccountNumber("Номер счёта вышел из допустимого диапазона.");
 
-        for (Account element : accounts) {
+        for (Account element : this) {
             if (element.getNumber() == accountNumber) {
                 Tariff currentTariff = element.getTariff();
                 element.setTariff(tariff);
@@ -297,5 +298,25 @@ public class AccountManager {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public Iterator<Account> iterator() {
+        return new AccountIterator();
+    }
+
+    private class AccountIterator implements Iterator<Account> {
+        int index;
+
+        public boolean hasNext() {
+            if (index < size) {
+                return true;
+            }
+            return false;
+        }
+
+        public Account next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            return get(index++);
+        }
     }
 }

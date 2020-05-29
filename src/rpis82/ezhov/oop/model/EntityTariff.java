@@ -3,6 +3,7 @@ package rpis82.ezhov.oop.model;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -116,9 +117,9 @@ public class EntityTariff implements Tariff {
     public Service get(String serviceName) {
         if (Objects.isNull(serviceName)) throw new NullPointerException();
 
-        for (int i = 0; i < size; i++) {
-            if (compareNames(i, serviceName)) {
-                return getNode(i);
+        for (Service element : this) {
+            if (element.getName().equals(serviceName)) {
+                return element;
             }
         }
         throw new NoSuchElementException();
@@ -132,8 +133,10 @@ public class EntityTariff implements Tariff {
     public boolean hasService(String serviceName) {
         if (Objects.isNull(serviceName)) throw new NullPointerException();
 
-        for (int i = 0; i < size; i++) {
-            return compareNames(i, serviceName);
+        for (Service element : this) {
+            if (element.getName().equals(serviceName)) {
+                return true;
+            }
         }
         return false;
     }
@@ -365,7 +368,8 @@ public class EntityTariff implements Tariff {
      */
     public Service[] sortedServicesByCost() {
         Service[] arrayToReturnWithoutNulls = getServicesWithoutNulls();
-
+        Arrays.sort(arrayToReturnWithoutNulls);
+        /* прошлая реализация через сортировку пузырьком
         boolean isSorted = false;
         Service buffer;
         while (!isSorted) {
@@ -378,7 +382,7 @@ public class EntityTariff implements Tariff {
                     arrayToReturnWithoutNulls[i + 1] = buffer;
                 }
             }
-        }
+        } */
         return arrayToReturnWithoutNulls;
     }
 
@@ -411,7 +415,7 @@ public class EntityTariff implements Tariff {
      */
     public double cost() {
         double sumServicesCost = 0;
-        for (Service element : getServicesWithoutNulls()) {
+        for (Service element : this) {
             // если срок использования тарифа меньше месяца, то пересчёт на дни
             if (Period.between(element.getActivationDate(), LocalDate.now()).getMonths() == 0) {
                 sumServicesCost += Period.between(element.getActivationDate(), LocalDate.now()).getDays() *
@@ -423,8 +427,6 @@ public class EntityTariff implements Tariff {
         }
         return sumServicesCost + 50;
     }
-
-    // Ниже приватные методы, реализующие работу с двусвязным списком
 
     /**
      * Добавление узла (с его заполнением) в определённую позицию списка.
@@ -501,5 +503,25 @@ public class EntityTariff implements Tariff {
             tariff.add(element.clone());
         }
         return tariff;
+    }
+
+    public Iterator<Service> iterator() {
+        return new ServiceIterator();
+    }
+
+    private class ServiceIterator implements Iterator<Service> {
+        int index;
+
+        public boolean hasNext() {
+            if (index < getServicesWithoutNulls().length) {
+                return true;
+            }
+            return false;
+        }
+
+        public Service next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            return get(index++);
+        }
     }
 }

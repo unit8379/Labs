@@ -1,9 +1,12 @@
 package rpis82.ezhov.oop.model;
 
+import jdk.nashorn.internal.ir.LiteralNode;
+
 import java.security.spec.RSAOtherPrimeInfo;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
+import java.util.Iterator;
 
 public class Test {
 
@@ -206,6 +209,34 @@ public class Test {
         System.out.println("ентити кост: " + entityTariff.cost() + "; индивидуал кост: " + individualsTariff.cost());
         
 
+    }
+
+    public static void lab6tests() {
+        Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE, LocalDate.of(2020, 05, 15));
+        Service service2 = new Service();
+        System.out.println(service2.compareTo(service1));
+        Service[] services = { service1, service2 };
+        IndividualsTariff individualsTariff = new IndividualsTariff(services);
+        EntityTariff entityTariff = new EntityTariff(services);
+        for (Service service : individualsTariff.sortedServicesByCost()) {
+            System.out.println(service.toString());
+        }
+
+        System.out.println("");
+        System.out.println("Iterator test:");
+        System.out.println("entity iterator:");
+        //Iterator entityIterator = entityTariff.iterator();
+        for (Service element : entityTariff) {
+            System.out.println(element.toString());
+        }
+        System.out.println("individual iterator:");
+        //Iterator individualIterator = individualsTariff.iterator();
+        for (Service element : individualsTariff) {
+            System.out.println(element.toString());
+        }
+        individualsTariff.get("интернет 5пб/мкс");
+        System.out.println(entityTariff.cost());
+        System.out.println(individualsTariff.cost());
     }
 
     /**
