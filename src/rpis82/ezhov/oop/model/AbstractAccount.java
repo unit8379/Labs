@@ -40,7 +40,7 @@ public abstract class AbstractAccount implements Account {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Number: " + number
                 + "\nRegistration Date: " + registrationDate + "\nServices:");
-        for (Service element : tariff.getServices()) {
+        for (Object element : tariff.toArray()) {
             stringBuilder.append(String.format("%n%s", element.toString()));
         }
         return stringBuilder.toString();
@@ -48,7 +48,7 @@ public abstract class AbstractAccount implements Account {
 
     @Override
     public int hashCode() {
-        int code = (int)number * tariff.getServices().length * registrationDate.hashCode();
+        int code = (int)number * tariff.toArray().length * registrationDate.hashCode();
         return code < 0 ? -code : code;
     }
 
@@ -58,7 +58,7 @@ public abstract class AbstractAccount implements Account {
         if (obj == null || getClass() != obj.getClass()) return false;
 
         AbstractAccount abstractAccount = (AbstractAccount) obj;
-        return (this.number == abstractAccount.number) && (this.tariff.getServices().length == abstractAccount.tariff.getServices().length)
+        return (this.number == abstractAccount.number) && (this.tariff.toArray().length == abstractAccount.tariff.toArray().length)
                 && (this.registrationDate.isEqual(abstractAccount.registrationDate));
     }
 }

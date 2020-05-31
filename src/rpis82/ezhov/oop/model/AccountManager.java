@@ -1,8 +1,6 @@
 package rpis82.ezhov.oop.model;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 public class AccountManager implements Iterable<Account> {
 
@@ -165,28 +163,44 @@ public class AccountManager implements Iterable<Account> {
     public Account[] getAccounts() { return accounts; }
 
     /**
-     * Метод, возвращающий массив счетов, содержащих в своих тарифах указанную услугу.
-     * @param serviceType тип услуги
-     * @return массив счетов
+     * Возвращает хэш-таблицу счетов, которые содержат услугу
+     * с заданным названием.
+     * @param serviceName Строка - название услуги.
+     * @return HashSet с аккаунтами.
      */
-    public Account[] getAccounts(ServiceTypes serviceType) {
+    public Set<Account> getAccounts(String serviceName) {
+        if (Objects.isNull(serviceName)) throw new NullPointerException();
+
+        HashSet<Account> hashSet = new HashSet<>();
+        for (int i = 0; i < accounts.length; i++) {
+            try {
+                accounts[i].getTariff().get(serviceName);
+                hashSet.add(accounts[i]);
+            }
+            // если метод get не найдёт услугу с заданным именем, то он выкинет исключение,
+            // а цикл пропустит данную итерацию
+            catch (Throwable e) {
+                continue;
+            }
+        }
+        return hashSet;
+    }
+
+    /**
+     * Метод, возвращающий хэш-таблицу счетов, содержащих в своих тарифах указанную услугу.
+     * @param serviceType Тип услуги.
+     * @return Хэш-табоица счетов.
+     */
+    public Set<Account> getAccounts(ServiceTypes serviceType) {
         if (Objects.isNull(serviceType)) throw new NullPointerException();
 
-        int specifiedSize = 0;
+        HashSet<Account> hashSet = new HashSet<>();
         for (int i = 0; i < accounts.length; i++) {
-            if (accounts[i].getTariff().getServices(serviceType)[0] != null) {
-               specifiedSize++;
+            if (!accounts[i].getTariff().getServices(serviceType).isEmpty()) {
+                hashSet.add(accounts[i]);
             }
         }
-        Account[] arrayToReturn = new Account[specifiedSize];
-
-        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
-            if (accounts[j].getTariff().getServices(serviceType)[0] != null) {
-                arrayToReturn[i] = accounts[j];
-                i++;
-            }
-        }
-        return arrayToReturn;
+        return hashSet;
     }
 
     /**
@@ -207,47 +221,31 @@ public class AccountManager implements Iterable<Account> {
     }
 
     /**
-     * Метод возвращает массив счетов, состоящих из счетов типа IndividualAccount
-     * @return массив счетов
+     * Метод возвращает список счетов, состоящих из счетов типа IndividualAccount.
+     * @return Список аккаунтов.
      */
-    public Account[] getIndividualAccounts() {
-        int specifiedSize = 0;
+    public List<Account> getIndividualAccounts() {
+        ArrayList<Account> arrayList = new ArrayList<>();
         for (int i = 0; i < accounts.length; i++) {
             if (accounts[i] instanceof rpis82.ezhov.oop.model.IndividualAccount) {
-                specifiedSize++;
+                arrayList.add(accounts[i]);
             }
         }
-        Account[] arrayToReturn = new Account[specifiedSize];
-
-        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
-            if (accounts[j] instanceof rpis82.ezhov.oop.model.IndividualAccount) {
-                arrayToReturn[i] = accounts[j];
-                i++;
-            }
-        }
-        return arrayToReturn;
+        return arrayList;
     }
 
     /**
-     * Метод возвращает массив счетов, состоящих из счетов типа EntityAccount
-     * @return массив счетов
+     * Метод возвращает связный список счетов, состоящих из счетов типа EntityAccount.
+     * @return Связный список счетов.
      */
-    public Account[] getEntityAccounts() {
-        int specifiedSize = 0;
+    public List<Account> getEntityAccounts() {
+        LinkedList<Account> linkedList = new LinkedList<>();
         for (int i = 0; i < accounts.length; i++) {
             if (accounts[i] instanceof rpis82.ezhov.oop.model.EntityAccount) {
-                specifiedSize++;
+                linkedList.add(accounts[i]);
             }
         }
-        Account[] arrayToReturn = new Account[specifiedSize];
-
-        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
-            if (accounts[j] instanceof rpis82.ezhov.oop.model.EntityAccount) {
-                arrayToReturn[i] = accounts[j];
-                i++;
-            }
-        }
-        return arrayToReturn;
+        return linkedList;
     }
 
     /**

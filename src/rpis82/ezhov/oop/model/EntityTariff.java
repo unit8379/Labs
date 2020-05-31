@@ -2,10 +2,7 @@ package rpis82.ezhov.oop.model;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 // тарифф юрид. лица. оперирует двусвязным списком. узлы описаны в классе Node
 public class EntityTariff implements Tariff {
@@ -91,12 +88,24 @@ public class EntityTariff implements Tariff {
     }
 
     /**
+     * Добавляет все элементы из переданной коллекции в данную коллекцию.
+     * @param collection Коллекция для передчи.
+     * @return Булево значение успешности операции.
+     */
+    public boolean addAll(Collection<? extends Service> collection) {
+        for (Service element : collection) {
+            this.add(element);
+        }
+        return true;
+    }
+
+    /**
      * Метод проверки ввода корректного индекса.
      * @param index Индекс элемента.
      * @return Булево значение.
      */
     private boolean isCorrectIndex(int index) {
-        return index >= 0 && index < size;
+        return index >= 0 && index <= size;
     }
 
     /**
@@ -143,6 +152,42 @@ public class EntityTariff implements Tariff {
 
     private boolean compareNames(int index, String serviceName) {
         return getNode(index).getName().equals(serviceName);
+    }
+
+    /**
+     * Определяет есть ли в списке данная услуга.
+     * @param service Ссылка на объект услуги.
+     * @return Логич. значение.
+     */
+    public boolean contains(Object service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+
+        for (Service element : this) {
+            if (element.equals(service)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Сранивает переданную коллекцию с данной.
+     * @param collection Коллекция для сравнения.
+     * @return Булево значение.
+     */
+    public boolean containsAll(Collection<?> collection) {
+        for (Object element : collection) {
+            if (!this.contains(element)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Возвращает логич. знач. пуст ли список.
+     * @return Логич. значение.
+     */
+    public boolean isEmpty() {
+        return Objects.isNull(head.getValue());
     }
 
     /**
@@ -220,6 +265,11 @@ public class EntityTariff implements Tariff {
                 }
                 if (currentNode.getNext() != null) {
                     currentNode.getNext().setPrevious(currentNode.getPrevious());
+                    // обновляем голову списка, если она была удалена
+                    if (Objects.isNull(currentNode.getNext().getPrevious())) head = currentNode.getNext();
+                }
+                else {
+                    currentNode.setValue(null);
                 }
                 size--;
                 return currentNode;
@@ -248,6 +298,37 @@ public class EntityTariff implements Tariff {
         throw new NoSuchElementException();
     }
 
+    /**
+     * Удаляет все идентичные услугам из переданной коллекции услуги.
+     * @param collection Коллекция услуг для удаления.
+     * @return <tt>true<tt/>, если что-то было удалено.
+     */
+    public boolean removeAll(Collection<?> collection) {
+        boolean isChanged = false;
+        for (Object element : collection) {
+            if (this.remove(element)) isChanged = true;
+        }
+        return isChanged;
+    }
+
+    /**
+     * Удаляет из коллекции все элементы, которых нет в переданной коллекции.
+     * Другими словами, делает данную коллекцию идентичной переданной на сколько
+     * это возможно.
+     * @param collection Коллекция для сравнения.
+     * @return Логич. значение успеха выполнения.
+     */
+    public boolean retainAll(Collection<?> collection) {
+        boolean isChanged = false;
+        for (Service element : this) {
+            if (!collection.contains(element)) {
+                this.remove(element);
+                isChanged = true;
+            }
+        }
+        return isChanged;
+    }
+
     public int size() { return size; }
 
     /**
@@ -256,9 +337,9 @@ public class EntityTariff implements Tariff {
      * @param service ссылка на услугу
      * @return логическое значение, показывающее была ли удалена ссылка
      */
-    public boolean remove(Service service) {
+    public boolean remove(Object service) {
         if (Objects.isNull(service)) throw new NullPointerException();
-        return removeNode(service);
+        return removeNode((Service) service);
     }
 
     /**
@@ -280,6 +361,11 @@ public class EntityTariff implements Tariff {
                 }
                 if (currentNode.getNext() != null) {
                     currentNode.getNext().setPrevious(currentNode.getPrevious());
+                    // обновляем голову списка, если она была удалена
+                    if (Objects.isNull(currentNode.getNext().getPrevious())) head = currentNode.getNext();
+                }
+                else {
+                    currentNode.setValue(null);
                 }
                 size--;
                 return true;
@@ -288,6 +374,15 @@ public class EntityTariff implements Tariff {
             currentNode = currentNode.getNext();
         }
         return false;
+    }
+
+    /**
+     * Удаляет все услуги из тарифа.
+     */
+    public void clear() {
+        while (!Objects.isNull(get(0))) {
+            remove(0);
+        }
     }
 
     /**
@@ -357,18 +452,39 @@ public class EntityTariff implements Tariff {
         return arrayToReturnWithoutNulls;
     }
 
-    public Service[] getServices() {
+    public Service[] toArray() {
         return getServicesWithoutNulls();
     }
 
     /**
-     * Массив сортируется по возрастанию стоимости услуг (пузырьком)
-     * и возвращается.
-     * @return массив услуг
+     * Взврашает Generic массив услуг.
+     * @param array Массив услуг для заполнения.
+     * @return Массив услуг.
      */
-    public Service[] sortedServicesByCost() {
+    public <Service> Service[] toArray(Service[] array) {
+        Service[] services = array;
+        if (array.length < size) {
+            services = Arrays.copyOf(array, size);
+        }
+
+        for (int i = 0; i < services.length; i++) {
+            services[i] = (Service) get(i);
+        }
+        return services;
+    }
+
+    /**
+     * Массив услуг сортируется по возрастанию их стоимости
+     * и возвращается в виде списка.
+     * @return список услуг
+     */
+    public ArrayList<Service> sortedServicesByCost() {
         Service[] arrayToReturnWithoutNulls = getServicesWithoutNulls();
         Arrays.sort(arrayToReturnWithoutNulls);
+        ArrayList<Service> arrayList = new ArrayList<>();
+        for (Service element : arrayToReturnWithoutNulls) {
+            arrayList.add(element);
+        }
         /* прошлая реализация через сортировку пузырьком
         boolean isSorted = false;
         Service buffer;
@@ -383,29 +499,25 @@ public class EntityTariff implements Tariff {
                 }
             }
         } */
-        return arrayToReturnWithoutNulls;
+        return arrayList;
     }
 
-    public Service[] getServices(ServiceTypes type) {
+    /**
+     * Возвращает связный список услуг указанного типа.
+     * @param type тип услуги
+     * @return Связный список из услуг.
+     */
+    public LinkedList<Service> getServices(ServiceTypes type) {
         if (Objects.isNull(type)) throw new NullPointerException();
 
-        Service[] services = getServicesWithoutNulls();
-
-        int specifiedSize = 0;
-        for (int i = 0; i < services.length; i++) {
-            if (services[i].getType() == type) {
-                specifiedSize++;
+        Service[] arrayServices = getServicesWithoutNulls();
+        LinkedList<Service> services = new LinkedList<Service>();
+        for (Service element : arrayServices) {
+            if (element.getType() == type) {
+                services.add(element);
             }
         }
-        Service[] arrayToReturn = new Service[specifiedSize];
-
-        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
-            if (services[j].getType() == type) {
-                arrayToReturn[i] = services[j];
-                i++;
-            }
-        }
-        return arrayToReturn;
+        return services;
     }
 
     /**

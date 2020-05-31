@@ -1,8 +1,11 @@
 package rpis82.ezhov.oop.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
-public interface Tariff extends Iterable<Service> {
+public interface Tariff extends Iterable<Service>, Collection<Service> {
     boolean add(Service service);
 
     boolean add(Service service, int index);
@@ -19,7 +22,7 @@ public interface Tariff extends Iterable<Service> {
 
     Service remove(String serviceName);
 
-    boolean remove(Service service);
+    //boolean remove(Service service);
 
     int indexOf(Service service);
 
@@ -27,11 +30,11 @@ public interface Tariff extends Iterable<Service> {
 
     int size();
 
-    Service[] getServices();
+    //Service[] getServices();
 
-    Service[] getServices(ServiceTypes type);
+    Collection<Service> getServices(ServiceTypes type);
 
-    Service[] sortedServicesByCost();
+    List<Service> sortedServicesByCost();
 
     double cost();
 

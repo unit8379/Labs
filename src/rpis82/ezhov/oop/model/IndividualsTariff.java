@@ -3,10 +3,7 @@ package rpis82.ezhov.oop.model;
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 public class IndividualsTariff implements Tariff, Cloneable {
     private Service[] services;
@@ -83,12 +80,24 @@ public class IndividualsTariff implements Tariff, Cloneable {
     }
 
     /**
+     * Добавляет все элементы из переданной коллекции в данную коллекцию.
+     * @param collection Коллекция для передчи.
+     * @return Булево значение успешности операции.
+     */
+    public boolean addAll(Collection<? extends Service> collection) {
+        for (Service element : collection) {
+            this.add(element);
+        }
+        return true;
+    }
+
+    /**
      * Метод проверки ввода корректного индекса.
      * @param index Индекс элемента.
      * @return Булево значение.
      */
     private boolean isCorrectIndex(int index) {
-        return index >= 0 && index < size;
+        return index >= 0 && index <= size;
     }
 
     /**
@@ -135,6 +144,34 @@ public class IndividualsTariff implements Tariff, Cloneable {
 
     private boolean compareNames(int index, String serviceName) {
         return services[index].getName().equals(serviceName);
+    }
+
+    /**
+     * Определяет есть ли в списке данная услуга.
+     * @param service Ссылка на объект услуги.
+     * @return Логич. значение.
+     */
+    public boolean contains(Object service) {
+        if (Objects.isNull(service)) throw new NullPointerException();
+
+        for (Service element : this) {
+            if (element.equals(service)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Сранивает переданную коллекцию с данной.
+     * @param collection Коллекция для сравнения.
+     * @return Булево значение.
+     */
+    public boolean containsAll(Collection<?> collection) {
+        for (Object element : collection) {
+            if (!this.contains(element)) return false;
+        }
+        return true;
     }
 
     /**
@@ -200,7 +237,46 @@ public class IndividualsTariff implements Tariff, Cloneable {
         throw new NoSuchElementException();
     }
 
+    /**
+     * Удаляет все идентичные услугам из переданной коллекции услуги.
+     * @param collection Коллекция услуг для удаления.
+     * @return <tt>true<tt/>, если что-то было удалено.
+     */
+    public boolean removeAll(Collection<?> collection) {
+        boolean isChanged = false;
+        for (Object element : collection) {
+            if (this.remove(element)) isChanged = true;
+        }
+        return isChanged;
+    }
+
+    /**
+     * Удаляет из коллекции все элементы, которых нет в переданной коллекции.
+     * Другими словами, делает данную коллекцию идентичной переданной на сколько
+     * это возможно.
+     * @param collection Коллекция для сравнения.
+     * @return Логич. значение успеха выполнения.
+     */
+    public boolean retainAll(Collection<?> collection) {
+        boolean isChanged = false;
+        for (Service element : this) {
+            if (!collection.contains(element)) {
+                this.remove(element);
+                isChanged = true;
+            }
+        }
+        return isChanged;
+    }
+
     public int size() { return size; }
+
+    /**
+     * Возвращает логич. знач. пуст ли список.
+     * @return Логич. значение.
+     */
+    public boolean isEmpty() {
+        return Objects.isNull(services[0]);
+    }
 
     /**
      * Удаляет экземпляр rpis82.ezhov.oop.Service из массива,
@@ -208,7 +284,7 @@ public class IndividualsTariff implements Tariff, Cloneable {
      * @param service ссылка на услугу
      * @return логическое значение, показывающее была ли удалена ссылка
      */
-    public boolean remove(Service service) {
+    public boolean remove(Object service) {
         if (Objects.isNull(service)) throw new NullPointerException();
 
         for (int i = 0; i < services.length; i++) {
@@ -223,6 +299,15 @@ public class IndividualsTariff implements Tariff, Cloneable {
             }
         }
         return false;
+    }
+
+    /**
+     * Удаляет все услуги из тарифа.
+     */
+    public void clear() {
+        while (!Objects.isNull(get(0))) {
+            remove(0);
+        }
     }
 
     /**
@@ -271,44 +356,58 @@ public class IndividualsTariff implements Tariff, Cloneable {
         return arrayToReturnWithoutNulls;
     }
 
-    public Service[] getServices() {
+    public Service[] toArray() {
         return getServicesWithoutNulls();
     }
 
     /**
-     * Возвращает массив услуг указанного типа.
-     * @param type тип услуги
-     * @return массив из услуг
+     * Взврашает Generic массив услуг.
+     * @param array Массив услуг для заполнения.
+     * @return Массив услуг.
      */
-    public Service[] getServices(ServiceTypes type) {
-        if (Objects.isNull(type)) throw new NullPointerException();
+    public <Service> Service[] toArray(Service[] array) {
+        Service[] services = array;
+        if (array.length < size) {
+            services = Arrays.copyOf(array, size);
+        }
 
-        int specifiedSize = 0;
         for (int i = 0; i < services.length; i++) {
-            if (services[i].getType() == type) {
-                specifiedSize++;
-            }
+            services[i] = (Service) get(i);
         }
-        Service[] arrayToReturn = new Service[specifiedSize];
-
-        for (int i = 0, j = 0; i < arrayToReturn.length; j++) {
-            if (services[j].getType() == type) {
-                arrayToReturn[i] = services[j];
-                i++;
-            }
-        }
-        return arrayToReturn;
+        return services;
     }
 
     /**
-     * Массив сортируется по возрастанию стоимости услуг (пузырьком)
-     * и возвращается.
-     * @return массив услуг
+     * Возвращает связный список услуг указанного типа.
+     * @param type тип услуги
+     * @return Связный список из услуг.
      */
-    public Service[] sortedServicesByCost() {
+    public LinkedList<Service> getServices(ServiceTypes type) {
+        if (Objects.isNull(type)) throw new NullPointerException();
+
+        Service[] arrayServices = getServicesWithoutNulls();
+        LinkedList<Service> services = new LinkedList<Service>();
+        for (Service element : arrayServices) {
+            if (element.getType() == type) {
+                services.add(element);
+            }
+        }
+        return services;
+    }
+
+    /**
+     * Массив услуг сортируется по возрастанию их стоимости
+     * и возвращается в виде списка.
+     * @return список услуг
+     */
+    public ArrayList<Service> sortedServicesByCost() {
         Service[] arrayToReturnWithoutNulls = getServicesWithoutNulls();
         Arrays.sort(arrayToReturnWithoutNulls);
-        return arrayToReturnWithoutNulls;
+        ArrayList<Service> arrayList = new ArrayList<>();
+        for (Service element : arrayToReturnWithoutNulls) {
+            arrayList.add(element);
+        }
+        return arrayList;
     }
 
     /**

@@ -6,6 +6,7 @@ import java.security.spec.RSAOtherPrimeInfo;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class Test {
@@ -237,6 +238,65 @@ public class Test {
         individualsTariff.get("интернет 5пб/мкс");
         System.out.println(entityTariff.cost());
         System.out.println(individualsTariff.cost());
+    }
+
+    public static void lab7tests() {
+        Service service1 = new Service("интернет 5пб/мкс", 500, ServiceTypes.ADDITIONAL_SERVICE, LocalDate.of(2020, 05, 15));
+        Service service2 = new Service();
+        Service[] services = { service1, service2 };
+        IndividualsTariff individualsTariff = new IndividualsTariff(services);
+        EntityTariff entityTariff = new EntityTariff(services);
+        System.out.println(entityTariff.toString());
+        System.out.println(individualsTariff.toString());
+        individualsTariff.clear();
+        entityTariff.addAll(individualsTariff);
+        individualsTariff.addAll(entityTariff);
+        System.out.println(entityTariff.toString());
+        System.out.println(individualsTariff.toString());
+        //entityTariff.removeAll(individualsTariff);
+        entityTariff.addAll(individualsTariff);
+        individualsTariff.addAll(entityTariff);
+
+        System.out.println("\nтест возвращающегося связного списка и списка отсортированного по цене");
+        System.out.println(individualsTariff.getServices(ServiceTypes.ADDITIONAL_SERVICE));
+        System.out.println(entityTariff.getServices(ServiceTypes.INTERNET));
+        System.out.println(individualsTariff.sortedServicesByCost());
+        System.out.println(entityTariff.sortedServicesByCost());
+
+        System.out.println("\nтест acc manager и его изменённых методов");
+        Person person1 = new Person("Gleb", "Ezhov");
+        individualsTariff.removeAll(entityTariff);
+        individualsTariff.remove("интернет 5пб/мкс");
+        IndividualAccount account1 = new IndividualAccount(1002340000001L, person1, individualsTariff, LocalDate.now());
+        EntityAccount account2 = new EntityAccount(1000003210001L, "company", entityTariff, LocalDate.now());
+        AccountManager accManager1 = new AccountManager(2);
+        try {
+            accManager1.add(account1);
+        } catch (DublicateAccountNumberException e) {
+            e.printStackTrace();
+        }
+        try {
+            accManager1.add(account2);
+        } catch (DublicateAccountNumberException e) {
+            e.printStackTrace();
+        }
+        //System.out.println(accManager1.toString());
+        System.out.println("\nПроверка getAccounts методов");
+        for (Account element : accManager1.getAccounts(ServiceTypes.ADDITIONAL_SERVICE)) {
+            System.out.println(element);
+        }
+        System.out.println("");
+        for (Account element : accManager1.getAccounts("интернет 5пб/мкс")) {
+            System.out.println(element);
+        }
+        System.out.println("\nПроверка getAccounts определённого класса");
+        for (Account element : accManager1.getIndividualAccounts()) {
+            System.out.println(element);
+        }
+        System.out.println("");
+        for (Account element : accManager1.getEntityAccounts()) {
+            System.out.println(element);
+        }
     }
 
     /**
